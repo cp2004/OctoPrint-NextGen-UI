@@ -1,4 +1,6 @@
 import SockJS from "sockjs-client";
+import * as React from "react"
+import {useEffect} from "react";
 
 const normalClose = 1000;  // Error code for normal close
 
@@ -35,18 +37,16 @@ class OctoPrintSocketClient {
         })
     }
 
-    propagateMessage = (event, data) => {
+    propagateMessage = (data) => {
         const start = new Date().getTime()
 
-        const eventObj = {event: event, data: data}
-
         const catchAllHandlers = this.registeredHandlers["*"]
-        const registeredHandlers = this.registeredHandlers[event]
+        const registeredHandlers = this.registeredHandlers[Object.keys(data)[0]]
 
         const handlers = [].concat(catchAllHandlers ? catchAllHandlers : []).concat(registeredHandlers ? registeredHandlers : [])
 
         if (handlers && handlers.length) {
-            handlers.forEach(handler => handler(eventObj))
+            handlers.forEach(handler => handler(data))
         }
 
         const end = new Date().getTime()
@@ -92,7 +92,7 @@ class OctoPrintSocketClient {
         }
 
         const onMessage = (msg) => {
-            Object.entries(msg.data).forEach((data, key) => self.propagateMessage(key, data))
+            self.propagateMessage(msg.data)
         }
 
         if (self.connectTimeout) {
@@ -201,3 +201,17 @@ class OctoPrintSocketClient {
 }
 
 export default OctoPrintSocketClient
+
+
+const SocketContext = React.createContext()
+
+export const SocketProvider = SocketContext.Provider
+
+export function useSocket (message, callback) {
+    const socketClient = React.useContext(SocketContext)
+    return useEffect(() => {
+        socketClient.onMessage(message, callback)
+        // Prevent memory leak from infinite handlers
+        return () => {socketClient.removeMessage(message, callback)}
+    }, [socketClient, callback, message])
+}

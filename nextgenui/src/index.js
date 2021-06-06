@@ -16,7 +16,13 @@ import '@fontsource/roboto/700.css';
 import {QueryClient, QueryClientProvider} from "react-query";
 import {ReactQueryDevtools} from "react-query/devtools";
 
-const client = new QueryClient()
+const client = new QueryClient({
+    defaultOptions: {
+        queries: {
+            refetchOnWindowFocus: false  // Don't want re-rendering on most things
+        }
+    }
+})
 
 ReactDOM.render(
     <QueryClientProvider client={client}>

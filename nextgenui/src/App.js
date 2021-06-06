@@ -4,10 +4,19 @@ import Main from "./components/Main"
 import Loading from "./components/Loading";
 
 import OctoPrintSocketClient from "./client";
+import {SocketProvider} from "./client/socketClient";
 
-window.OctoPrintSocket = new OctoPrintSocketClient("http://localhost:5000")
-const SocketClient = window.OctoPrintSocket
-SocketClient.onMessage("*", (msg) => console.log(msg))
+// WDS uses sockjs for hot-reloading, so OctoPrint's socket does not
+// work with the built in proxy & we have to manually override the URL here
+let SOCKET_URL
+if (process.env.NODE_ENV !== "production"){
+    SOCKET_URL = "http://localhost:5000"
+} else {
+    SOCKET_URL = "."
+}
+
+const SocketClient =  new OctoPrintSocketClient(SOCKET_URL)
+window.OctoPrintSocket = SocketClient
 
 const login = (data) => {
     return fetch("./api/login", {
@@ -52,6 +61,8 @@ function App () {
                             setAuthorized(true)
                             setLoading(false)
                         })
+                    } else {
+                        setLoading(false)
                     }
                 })
             } else {
@@ -72,6 +83,9 @@ function App () {
                             setAuthorized(true)
                             setLoading(false)
                         })
+                    } else {
+                        // This shouldn't happen as it should back out with 403
+                        setLoading(false)
                     }
                 })
             } else {
@@ -81,9 +95,13 @@ function App () {
     }
 
     return (
-        <>
-            {loading ? <Loading>Connecting to OctoPrint's server... </Loading> : (authorized ? <Main /> : <Login onLogin={doActiveLogin} />)}
-        </>
+        <SocketProvider value={SocketClient}>
+            {loading
+                ? <Loading>Connecting to OctoPrint's server... </Loading>
+                : (authorized
+                    ? <Main />
+                    : <Login onLogin={doActiveLogin} />)}
+        </SocketProvider>
     )
 }
 
