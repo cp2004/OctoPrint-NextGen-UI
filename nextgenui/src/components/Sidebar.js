@@ -1,65 +1,26 @@
 import {
     Box,
-    Button,
     Drawer,
-    List,
-    Typography
+    List, ListItem, Tab, Tabs,
 } from '@material-ui/core';
-import BarChartIcon from '@material-ui/icons/BarChart';
-import PeopleIcon from '@material-ui/icons/People';
-import ShoppingBagIcon from '@material-ui/icons/ShoppingBag';
-import PersonIcon from '@material-ui/icons/Person';
 import SettingsIcon from '@material-ui/icons/Settings';
-import LockIcon from '@material-ui/icons/Lock';
-import PersonAddIcon from '@material-ui/icons/PersonAdd';
-import ErrorIcon from '@material-ui/icons/Error';
+import ThermostatIcon from '@material-ui/icons/Thermostat';
+import ControlCameraIcon from '@material-ui/icons/ControlCamera';
+import FolderOpenOutlinedIcon from '@material-ui/icons/FolderOpenOutlined';
+import VideocamOutlinedIcon from '@material-ui/icons/VideocamOutlined';
+import ChatOutlinedIcon from '@material-ui/icons/ChatOutlined';
 
-import NavItem from './NavItem';
+import Typography from "@material-ui/core/Typography";
+import tabs from "./TabsList"
 
-const items = [
-    {
-        href: '/app/dashboard',
-        icon: BarChartIcon,
-        title: 'Dashboard'
-    },
-    {
-        href: '/app/customers',
-        icon: PeopleIcon,
-        title: 'Customers'
-    },
-    {
-        href: '/app/products',
-        icon: ShoppingBagIcon,
-        title: 'Products'
-    },
-    {
-        href: '/app/account',
-        icon: PersonIcon,
-        title: 'Account'
-    },
-    {
-        href: '/app/settings',
-        icon: SettingsIcon,
-        title: 'Settings'
-    },
-    {
-        href: '/login',
-        icon: LockIcon,
-        title: 'Login'
-    },
-    {
-        href: '/register',
-        icon: PersonAddIcon,
-        title: 'Register'
-    },
-    {
-        href: '/404',
-        icon: ErrorIcon,
-        title: 'Error'
-    }
-];
+function a11yProps(index) {
+    return {
+        id: `vertical-tab-${index}`,
+        'aria-controls': `vertical-tabpanel-${index}`,
+    };
+}
 
-const Sidebar = ({ onMobileClose, openMobile }) => {
+const Sidebar = ({ onMobileClose, openMobile, selectedTab, onTabChange }) => {
     const content = (
         <Box
             sx={{
@@ -69,55 +30,23 @@ const Sidebar = ({ onMobileClose, openMobile }) => {
             }}
         >
             <Box sx={{ p: 2 }}>
-                <List>
-                    {items.map((item) => (
-                        <NavItem
-                            href={item.href}
-                            key={item.title}
-                            title={item.title}
-                            icon={item.icon}
+                <Tabs
+                    orientation={"vertical"}
+                    variant={"scrollable"}
+                    value={selectedTab}
+                    onChange={onTabChange}
+                >
+                    {tabs.map((item, index) => (
+                        <Tab
+                            sx={{"& > span": {alignItems: 'flex-start'}}}
+                            key={index}
+                            label={<TabItem title={item.title} icon={item.icon} />}
+                            {...a11yProps(index)}
                         />
                     ))}
-                </List>
+                </Tabs>
             </Box>
             <Box sx={{ flexGrow: 1 }} />
-            <Box
-                sx={{
-                    backgroundColor: 'background.default',
-                    m: 2,
-                    p: 2
-                }}
-            >
-                <Typography
-                    align="center"
-                    gutterBottom
-                    variant="h4"
-                >
-                    Need more?
-                </Typography>
-                <Typography
-                    align="center"
-                    variant="body2"
-                >
-                    Upgrade to PRO version and access 20 more screens
-                </Typography>
-                <Box
-                    sx={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        pt: 2
-                    }}
-                >
-                    <Button
-                        color="primary"
-                        component="a"
-                        href="https://react-material-kit.devias.io"
-                        variant="contained"
-                    >
-                        See PRO version
-                    </Button>
-                </Box>
-            </Box>
         </Box>
     );
 
@@ -158,4 +87,13 @@ const Sidebar = ({ onMobileClose, openMobile }) => {
     );
 };
 
+const TabItem = ({title, icon: Icon}) => (
+    <Box sx={{display: 'flex', flexDirection: 'row', alignItems: 'left'}}>
+        <Icon sx={{mr: 2}} />
+        <Typography sx={{textTransform: 'none', letterSpacing: 0}}>{title}</Typography>
+    </Box>
+)
+
 export default Sidebar;
+
+// label={<TabItem title={item.title} icon={item.icon} />}
