@@ -1,12 +1,10 @@
 // Dashboard layout adapted from https://github.com/devias-io/material-kit-react, MIT
-import {useState} from "react";
 import { styled } from '@material-ui/core/styles';
 import Navbar from "../Navbar"
 import Sidebar from "../Sidebar";
 import RightSideBar from "../RightSideBar";
 import Box from "@material-ui/core/Box";
 import Container from "@material-ui/core/Container";
-import Temperature from "../Tabs/Temperature";
 import * as React from "react";
 import tabs from "../TabsList"
 
@@ -46,8 +44,8 @@ const LayoutContent = styled('div')({
 });
 
 const Layout = (props) => {
-    const [isMobileNavOpen, setMobileNavOpen] = useState(false);
-    const [selectedTab, setSelectedTab] = useState(0)
+    const [isMobileNavOpen, setMobileNavOpen] = React.useState(false);
+    const [selectedTab, setSelectedTab] = React.useState(0)
 
     const handleTabChange = (event, newValue) => {
         setSelectedTab(newValue)
@@ -65,7 +63,7 @@ const Layout = (props) => {
             <LayoutWrapper>
                 <LayoutContainer>
                     <LayoutContent>
-                        <OctoPrintUI selectedTab={selectedTab} /> {/*TODO moving this here is suboptimal, want it to be generic layout*/}
+                        <OctoPrintUI selectedTab={selectedTab} /> {/*TODO moving this here is suboptimal, wanted it to be generic layout*/}
                     </LayoutContent>
                 </LayoutContainer>
             </LayoutWrapper>

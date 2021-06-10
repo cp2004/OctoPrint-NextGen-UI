@@ -1,10 +1,7 @@
-import { useState } from 'react';
-import {
-    AppBar,
-    Box, Icon,
-    IconButton,
-    Toolbar
-} from '@material-ui/core';
+import AppBar from "@material-ui/core/AppBar"
+import Box from "@material-ui/core/Box"
+import IconButton from "@material-ui/core/IconButton"
+import Toolbar from "@material-ui/core/Toolbar";
 import MenuIcon from '@material-ui/icons/Menu';
 import NotificationsIcon from '@material-ui/icons/NotificationsOutlined';
 import tentacle from "../images/tentacle.svg"

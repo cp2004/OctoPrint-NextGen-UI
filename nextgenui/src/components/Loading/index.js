@@ -1,5 +1,5 @@
 import Container from "@material-ui/core/Container";
-import {LinearProgress} from "@material-ui/core";
+import LinearProgress from "@material-ui/core/LinearProgress";
 import Typography from "@material-ui/core/Typography";
 
 export default function Loading (props) {

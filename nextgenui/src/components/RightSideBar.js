@@ -1,12 +1,12 @@
-import {Drawer, List, ListItem} from "@material-ui/core";
-import {useMediaQuery} from "@material-ui/core";
+import * as React from "react";
+import Drawer from "@material-ui/core/Drawer"
+import List from "@material-ui/core/List"
+import ListItem from "@material-ui/core/ListItem"
 import Box from "@material-ui/core/Box";
 import PowerIcon from '@material-ui/icons/Power';
 import FileIcon from '@material-ui/icons/AttachFile';
-import * as React from "react";
 import {useState} from "react";
 import {useSocket} from "../client/socketClient";
-import Typography from "@material-ui/core/Typography";
 
 function SideBarItem (props) {
     return (

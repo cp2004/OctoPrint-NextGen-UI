@@ -1,15 +1,7 @@
-import {
-    Box,
-    Drawer,
-    List, ListItem, Tab, Tabs,
-} from '@material-ui/core';
-import SettingsIcon from '@material-ui/icons/Settings';
-import ThermostatIcon from '@material-ui/icons/Thermostat';
-import ControlCameraIcon from '@material-ui/icons/ControlCamera';
-import FolderOpenOutlinedIcon from '@material-ui/icons/FolderOpenOutlined';
-import VideocamOutlinedIcon from '@material-ui/icons/VideocamOutlined';
-import ChatOutlinedIcon from '@material-ui/icons/ChatOutlined';
-
+import Box from "@material-ui/core/Box"
+import Drawer from "@material-ui/core/Drawer";
+import Tab from "@material-ui/core/Tab";
+import Tabs from "@material-ui/core/Tabs"
 import Typography from "@material-ui/core/Typography";
 import tabs from "./TabsList"
 

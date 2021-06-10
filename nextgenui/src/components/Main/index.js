@@ -1,11 +1,11 @@
 import * as React from "react"
-import Loading from "../Loading";
 import {useQuery} from "react-query";
 import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container"
 import Alert from "@material-ui/core/Alert";
 import AlertTitle from "@material-ui/core/AlertTitle";
 
+import Loading from "../Loading";
 import Layout from "../Layout";
 import {SettingsProvider} from "../../settings";
 import {useSocket} from "../../client/socketClient";
