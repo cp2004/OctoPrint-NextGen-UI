@@ -6,18 +6,6 @@ import Loading from "./components/Loading";
 import OctoPrintSocketClient from "./client";
 import {SocketProvider} from "./client/socketClient";
 
-// WDS uses sockjs for hot-reloading, so OctoPrint's socket does not
-// work with the built in proxy & we have to manually override the URL here
-let SOCKET_URL
-if (process.env.NODE_ENV !== "production"){
-    SOCKET_URL = "http://localhost:5000"
-} else {
-    SOCKET_URL = "."
-}
-
-const SocketClient =  new OctoPrintSocketClient(SOCKET_URL)
-window.OctoPrintSocket = SocketClient
-
 const login = (data) => {
     return fetch("./api/login", {
         method: "POST",
@@ -37,19 +25,13 @@ const activeLogin = (user, pass, remember) => {
     return login({user: user, pass: pass, remember: remember})
 }
 
-const socketConnect = (name, session, callback) => {
-    console.log("Connecting...")
-    SocketClient.onConnected = () => {
-        console.log("socket connect!")
-        SocketClient.sendAuth(name, session)
-        callback()
-    }
-    SocketClient.connect()
-}
-
 function App () {
     const [loading, setLoading] = React.useState(true)
     const [authorized, setAuthorized] = React.useState(false)
+    const [loginData, setLoginData] = React.useState({
+        name: "",
+        session: ""
+    })
 
     React.useEffect(() => {
         // Try passive login on first load
@@ -57,15 +39,17 @@ function App () {
             if (response.status === 200){
                 response.json().then((data) => {
                     if (data.session) {
-                        socketConnect(data.name, data.session, () => {
-                            setAuthorized(true)
-                            setLoading(false)
-                        })
+                        // Next time, on confusing auth flows: socket connecting
+                        setLoginData({name: data.name, session: data.session})
+                        setAuthorized(true)
+                        setLoading(false)
                     } else {
+                        // If not authorized & not loading, we must need a login
                         setLoading(false)
                     }
                 })
             } else {
+                // Login failed, show login screen
                 setLoading(false)
             }
         })
@@ -76,13 +60,12 @@ function App () {
         setLoading(true)
         activeLogin(username, password, remember).then((response) => {
             if (response.status === 200){
-                // Login succeeded, socket auth now
                 response.json().then((data) => {
                     if (data.session) {
-                        socketConnect(data.name, data.session, () => {
-                            setAuthorized(true)
-                            setLoading(false)
-                        })
+                        // aaand we have a session cookie! Who wants it?
+                        setLoginData({name: data.name, session: data.session})
+                        setAuthorized(true)
+                        setLoading(false)
                     } else {
                         // This shouldn't happen as it should back out with 403
                         setLoading(false)
@@ -94,15 +77,19 @@ function App () {
         })
     }
 
-    return (
-        <SocketProvider value={SocketClient}>
-            {loading
-                ? <Loading>Connecting to OctoPrint's server... </Loading>
-                : (authorized
-                    ? <Main />
-                    : <Login onLogin={doActiveLogin} />)}
-        </SocketProvider>
-    )
+    if (loading) {
+        return (
+            <Loading>Connecting to OctoPrint's server... </Loading>
+        )
+    } else if (authorized) {
+        return (
+            <Main loginData={loginData} />
+        )
+    } else if (!authorized) {
+        return (
+            <Login onLogin={doActiveLogin} />
+        )
+    }
 }
 
 export default App

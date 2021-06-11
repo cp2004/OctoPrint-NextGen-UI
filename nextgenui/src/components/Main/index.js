@@ -8,20 +8,39 @@ import AlertTitle from "@material-ui/core/AlertTitle";
 import Loading from "../Loading";
 import Layout from "../Layout";
 import {SettingsProvider} from "../../settings";
-import {useSocket} from "../../client/socketClient";
+import {SocketProvider, useSocket} from "../../client/socketClient";
 import {ProfileProvider} from "../../settings/printerprofiles";
+import OctoPrintSocketClient from "../../client";
 
+// WDS uses sockjs for hot-reloading, so OctoPrint's socket does not
+// work with the built in proxy & we have to manually override the URL here
+let SOCKET_URL
+if (process.env.NODE_ENV !== "production"){
+    SOCKET_URL = "http://localhost:5000"  // CHANGE THIS when you are developing, TODO document
+} else {
+    SOCKET_URL = "."
+}
 
-export default function Main (props) {
-    // When this component is rendered, the socket is connected
-    // and the user is authorized, so we can load everything else
-    // TODO there is a race condition, if loading all this data is longer than recieving the history event we have issues
-    // Maybe swap the order of them?
-    // Passive login, then grab settings, then connect & auth socket?
-    // OR, render the UI in the background, so that the components start collecting their state before
-    // they are visible. This seems like the more sensible option, and might reduce stuttering of the loading screen
-    // BUT this breaks the assumptions that settings are fully available for components to start rendering :/
-    // We need components to be rendered, but *after* before the socket is connected to make sure we get that info
+const SocketClient =  new OctoPrintSocketClient(SOCKET_URL)
+window.OctoPrintSocket = SocketClient
+
+const socketConnect = (name, session) => {
+    console.log("Connecting...")
+    SocketClient.onConnected = () => {
+        console.log("Socket connect!")
+        SocketClient.sendAuth(name, session)
+    }
+    SocketClient.connect()
+}
+
+function Main ({ loginData }) {
+    /* Rough outline of load flow:
+     * * Passive login
+     * * Fetch settings, printer profile etc. anything necessary for rendering
+     * * Render UI & connect to socket
+     * If the flow does not go like this there may be race conditions
+     * Components can assume that settings will be available, but must be able to cope with no socket data
+     */
 
     const {isLoading: isLoadingSettings, error, data: settings, refetch: refetchSettings} = useQuery("settings", () => {
         return fetch("./api/settings").then(response => response.json())
@@ -43,6 +62,13 @@ export default function Main (props) {
         isLoadingSettings || isLoadingProfiles
     )
 
+    React.useEffect(() => {
+        if (!isLoadingSettings && !isLoadingProfiles){
+            // Data has been fetched, to socket auth we go
+            socketConnect(loginData.name, loginData.session)
+        }
+    }, [isLoadingProfiles, isLoadingSettings, loginData]) // loginData SHOULD not change after initial render
+
     if (error) {
         return (
             <Container maxWidth={"sm"}>
@@ -53,30 +79,44 @@ export default function Main (props) {
         )
     }
 
+    if (settings && settings.error) {
+        return (
+            <Container maxWidth={"sm"}>
+                <Alert severity={"error"} sx={{mt: 10}}>
+                    <AlertTitle>Error loading settings</AlertTitle>
+                    There was an error loading the settings
+                </Alert>
+            </Container>
+        )
+    } else if (isLoading) {
+        return (
+            <Loading>
+                Loading OctoPrint's UI...
+            </Loading>
+        )
+    } else {
+        return (
+            <Providers settings={settings} profiles={printerProfiles}>
+                <Layout />
+            </Providers>
+        )
+    }
+}
+
+export default function MainWrapper (props) {
     return (
-        <>
-            {settings && settings.error ?
-                <Container maxWidth={"sm"}>
-                    <Alert severity={"error"} sx={{mt: 10}}>
-                        <AlertTitle>Error loading settings</AlertTitle>
-                        There was an error loading the settings
-                    </Alert>
-                </Container>
-                : (isLoading ?
-                    <Loading>
-                        Loading OctoPrint's UI...
-                    </Loading>
-                    :
-                    <SettingsProvider value={settings}>
-                        <ProfileProvider value={printerProfiles}>
-                            <Layout />
-                        </ProfileProvider>
-                    </SettingsProvider>
-                )
-            }
-        </>
+        <SocketProvider value={SocketClient}>
+            <Main {...props} />
+        </SocketProvider>
     )
 }
 
+const Providers = ({settings, profiles, children}) => (
+    <SettingsProvider value={settings}>
+        <ProfileProvider value={profiles}>
+            {children}
+        </ProfileProvider>
+    </SettingsProvider>
+)
 
 

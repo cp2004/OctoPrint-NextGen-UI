@@ -1,0 +1,7 @@
+/*
+ * Most styling is done through MUI, but the occasional thing is done here because it is easier
+ */
+
+:root {
+    overflow-y: scroll;  /* Enforce page scrollbar to avoid constant changing of widths when clicking tabs */
+}
