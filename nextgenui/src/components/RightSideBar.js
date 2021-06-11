@@ -7,6 +7,7 @@ import PowerIcon from '@material-ui/icons/Power';
 import FileIcon from '@material-ui/icons/AttachFile';
 import {useState} from "react";
 import {useSocket} from "../client/socketClient";
+import {Skeleton} from "@material-ui/core";
 
 function SideBarItem (props) {
     return (
@@ -29,8 +30,11 @@ function SideBarItem (props) {
     )
 }
 
+const SKELETON_LINES = [...Array(2).keys()]
+
 export default function RightSideBar (props) {
     const [printerState, setPrinterState] = React.useState({
+        notSetYet: true, // This will be removed wen set from socket, use to render skeleton
         text: "",
         flags: {}
     })
@@ -74,12 +78,18 @@ export default function RightSideBar (props) {
 
             <Box sx={{p: 2}}>
                 <List>
-                    <SideBarItem icon={PowerIcon}>
-                        {printerState.text}
-                    </SideBarItem>
-                    {jobState.file.display && <SideBarItem icon={FileIcon}>
-                        <div title={jobState.file.display}>{jobState.file.display}</div>
-                    </SideBarItem>}
+                    {printerState.notSetYet
+                        ? SKELETON_LINES.map((lineNo) => <Skeleton key={lineNo} variant={"text"} />)
+                    : (
+                        <>
+                            <SideBarItem icon={PowerIcon}>
+                            {printerState.text}
+                            </SideBarItem>
+                            {jobState.file.display && <SideBarItem icon={FileIcon}>
+                                <div title={jobState.file.display}>{jobState.file.display}</div>
+                            </SideBarItem>}
+                        </>
+                        )}
                 </List>
             </Box>
         </Drawer>

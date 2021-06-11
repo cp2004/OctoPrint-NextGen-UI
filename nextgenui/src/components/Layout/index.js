@@ -67,6 +67,7 @@ const Layout = (props) => {
                     </LayoutContent>
                 </LayoutContainer>
             </LayoutWrapper>
+            {/* TODO responsive sidebar? */}
             <RightSideBar />
         </LayoutRoot>
     );
