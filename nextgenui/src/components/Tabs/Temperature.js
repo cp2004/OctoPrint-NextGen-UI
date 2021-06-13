@@ -65,26 +65,42 @@ export default function Temperature (props) {
     useSocket("history", socketHandler)
 
     return (
-        <Box>
+        <>
             <TempGraph
                 tempData={tempData}
                 tools={tools}
             />
             <TempControls tempData={tempData} tools={tools}/>
-        </Box>
+        </>
     )
+}
+
+const tempLineProps = {
+    type: 'monotone',
+    dot: false,
+    isAnimationActive: false,
+    strokeWidth: 2,
 }
 
 function TempGraph ({tempData, tools}) {
 
     const actualLines = tools.map(({key, name}, index) =>
-        <Line key={"actual-" + key} type="monotone" dataKey={key + ".actual"} stroke={actualColors[index]}
-              dot={false} isAnimationActive={false}/>
+        <Line
+            key={"actual-" + key}
+            dataKey={key + ".actual"}
+            stroke={actualColors[index]}
+            {...tempLineProps}
+        />
     )
 
     const targetLines = tools.map(({key, name}, index) =>
-        <Line key={"target-" + key} type="monotone" dataKey={key + ".target"} stroke={targetColors[index]}
-              dot={false} strokeDasharray="3 3" isAnimationActive={false}/>
+        <Line
+            key={"target-" + key}
+            dataKey={key + ".target"}
+            stroke={targetColors[index]}
+            strokeDasharray="3 3"
+            {...tempLineProps}
+        />
     )
 
     const tempFormatter = (value) => value + "°C"
@@ -125,8 +141,8 @@ function TempGraph ({tempData, tools}) {
                     <YAxis tickFormatter={tempFormatter} />
                     <Tooltip content={TempTooltip} isAnimationActive={false} />
                     <Legend content={TempLegend}/>
-                    {actualLines}
                     {targetLines}
+                    {actualLines}
                 </LineChart>
             </ResponsiveContainer>
         </Box>
@@ -255,7 +271,7 @@ function SingleControl ({tempData, toolKey, name}){
             }
 
             // Do nothing if out of range
-            if (!(0 <= value <= 999)) {
+            if (!(0 <= value && value <= 999)) {
                 return
             }
         }
@@ -292,7 +308,7 @@ function SingleControl ({tempData, toolKey, name}){
             }
 
             // Abort any changes if that is out of bounds
-            if (!(0 <= newValue <= 999)) return prevState
+            if (!(0 <= newValue && newValue <= 999)) return prevState
 
             return newValue
         })

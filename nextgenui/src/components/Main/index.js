@@ -22,6 +22,7 @@ if (process.env.NODE_ENV !== "production"){
 }
 
 const SocketClient =  new OctoPrintSocketClient(SOCKET_URL)
+// Attach to window for useful debugging in console
 window.OctoPrintSocket = SocketClient
 
 const socketConnect = (name, session) => {

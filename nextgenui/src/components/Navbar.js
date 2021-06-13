@@ -3,12 +3,13 @@ import Box from "@material-ui/core/Box"
 import IconButton from "@material-ui/core/IconButton"
 import Toolbar from "@material-ui/core/Toolbar";
 import MenuIcon from '@material-ui/icons/Menu';
-import NotificationsIcon from '@material-ui/icons/NotificationsOutlined';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import tentacle from "../images/tentacle.svg"
 import {useSettings} from "../settings";
 import Typography from "@material-ui/core/Typography";
+import {Tooltip} from "@material-ui/core";
 
-const DashboardNavbar = ({ onMobileNavOpen, ...rest }) => {
+const Navbar = ({ onMobileNavOpen, ...rest }) => {
 
     const settings = useSettings()
 
@@ -26,9 +27,11 @@ const DashboardNavbar = ({ onMobileNavOpen, ...rest }) => {
                 </Box>
                 <Box sx={{ flexGrow: 1 }} />
                 <Box sx={{ display: {lg: 'block', xs: 'none'}}} >
-                    <IconButton color={"inherit"}>
-                        <NotificationsIcon />
-                    </IconButton>
+                    <Tooltip title={"Exit"}>
+                        <IconButton color={"inherit"} href={"./"}>
+                            <ExitToAppIcon />
+                        </IconButton>
+                    </Tooltip>
                 </Box>
                 <Box sx={{ display: {xs: 'block', lg: 'none'}}}>
                     <IconButton
@@ -43,4 +46,4 @@ const DashboardNavbar = ({ onMobileNavOpen, ...rest }) => {
     );
 };
 
-export default DashboardNavbar;
+export default Navbar;
