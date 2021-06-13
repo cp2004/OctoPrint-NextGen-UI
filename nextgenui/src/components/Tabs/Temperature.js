@@ -8,7 +8,7 @@ import Chip from "@material-ui/core/Chip";
 import CircleIcon from '@material-ui/icons/Circle';
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
-import {IconButton, InputAdornment, ListItemText, OutlinedInput, Paper, Table, TextField, chipClasses} from "@material-ui/core";
+import {IconButton, InputAdornment, ListItemText, OutlinedInput, Paper, chipClasses} from "@material-ui/core";
 import List from "@material-ui/core/List";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
@@ -35,6 +35,22 @@ const targetColors = [
 export default function Temperature (props) {
     const [tempData, setTempData] = React.useState([])
 
+    const printerProfile = useProfiles().profiles._default  // TODO support for actual 'active' profile
+
+    const numExtruders = printerProfile.extruder.count
+    const hasBed = printerProfile.heatedBed
+    const hasChamber = printerProfile.heatedChamber
+
+
+    const tools = [
+        ...(hasBed ? [{key: 'bed', name: 'Bed'}] : []),
+        ...(hasChamber ? [{key: 'chamber', name: 'Chamber'}]: []),
+        ...([...Array(numExtruders).keys()].map((extruder) => ({
+            key: `tool${extruder}`,
+            name: `Tool ${extruder}`,
+        })))
+    ]
+
     const socketHandler = (msg) => {
         const data = msg.current ? msg.current : msg.history
         const temps = data.temps
@@ -47,21 +63,6 @@ export default function Temperature (props) {
     }
     useSocket("current", socketHandler)
     useSocket("history", socketHandler)
-
-    const printerProfile = useProfiles().profiles._default  // TODO support for actual 'active' profile
-
-    const numExtruders = printerProfile.extruder.count
-    const hasBed = printerProfile.heatedBed
-    const hasChamber = printerProfile.heatedChamber
-
-    const tools = [
-        ...(hasBed ? [{key: 'bed', name: 'Bed'}] : []),
-        ...(hasChamber ? [{key: 'chamber', name: 'Chamber'}]: []),
-        ...([...Array(numExtruders).keys()].map((extruder) => ({
-            key: `tool${extruder}`,
-            name: `Tool ${extruder}`,
-        })))
-    ]
 
     return (
         <Box>
@@ -164,14 +165,6 @@ const TempLegend = ({payload}) => {
 }
 
 const TempTooltip = ({active, payload, label}) => {
-    // This needs to be as performant as possible, since when hovering it is re-rendered loads
-    // TODO reduce CPU usage of tooltip, which is quite high even with animations disabled
-    // Initial suspicions:
-    // * MUI/Emotion's `sx` prop is causing a lot of overhead - doesn't seem to be, the classnames are stable
-    // * MUI components are slower to render than basic HTML
-    // -> Do we really need to use `ListItem`s? Could use a styled co
-    // Recharts is positioning this as an SVG and is calculating this using extreme accuracy. This probably isn't necessary.
-    // Looking at
     if (active && payload && payload.length){
         const time = new Date(0)
         time.setUTCSeconds(parseInt(label, 10))
@@ -200,46 +193,9 @@ const TempTooltip = ({active, payload, label}) => {
 }
 
 function TempControls ({tempData, tools}) {
-    const entries = tools.map(({key, name}, index) => {
-        const actual = tempData.length && tempData[tempData.length - 1][key] ? tempData[tempData.length - 1][key]["actual"] : 0
-        const target = tempData.length && tempData[tempData.length - 1][key] ? tempData[tempData.length - 1][key]["target"] : 0
-
-        return (
-            <React.Fragment key={key}>
-                <Grid item xs={1}>
-                    <Typography fontWeight={"bold"}>
-                        {name}
-                    </Typography>
-                </Grid>
-                <Grid item xs={2}>
-                    {actual}
-                </Grid>
-                <Grid item xs={4}>
-                    <OutlinedInput
-                        size={"small"}
-                        value={target}
-                        sx={{'& .MuiOutlinedInput-input': {textAlign: 'center'}}}
-                        startAdornment={
-                            <IconButton size={"small"} variant={"contained"} color={"secondary"} title={"Decrease target"}>
-                                <RemoveIcon />
-                            </IconButton>
-                        }
-                        endAdornment={
-                            <>
-                                <InputAdornment position={"end"}>°C</InputAdornment>
-                                <IconButton size={"small"} variant={"contained"} color={"secondary"} title={"Decrease target"}>
-                                    <AddIcon />
-                                </IconButton>
-                            </>
-                        }
-                    />
-                    <Button variant={"outlined"} sx={{ml: 1, height: "100%"}}>
-                        <CheckIcon />
-                    </Button>
-                </Grid>
-                <Grid item xs={5} />
-            </React.Fragment>
-    )})
+    const entries = tools.map(({key, name}) => (
+        <SingleControl tempData={tempData} toolKey={key} name={name} />
+    ))
 
     return (
         <Paper variant={"outlined"} sx={{my: 1, mx: 4, p: 2}}>
@@ -263,6 +219,219 @@ function TempControls ({tempData, tools}) {
             </Grid>
         </Paper>
     )
+}
+
+function SingleControl ({tempData, toolKey, name}){
+    const [targetValue, setTargetValue] = React.useState(0)
+    const [newTarget, setNewTarget] = React.useState("")
+
+    const actual = tempData.length && tempData[tempData.length - 1][toolKey] ? tempData[tempData.length - 1][toolKey]["actual"] : 0
+    const target = tempData.length && tempData[tempData.length - 1][toolKey] ? tempData[tempData.length - 1][toolKey]["target"] : 0
+
+    React.useEffect(() => {
+        // Set target state whenever the tempData is updated
+        // To show as a placeholder when nothing is being done
+        console.log(target)
+        setTargetValue(target)
+    }, [setTargetValue, target])
+
+    const onTargetChange = (event) => {
+        // Handle changing the target nicely, checking validity
+        let value = event.target.value
+
+        if (value !== ""){
+            // If the value is not empty, it must be a number, so abort if it is anything else
+            // "" is the only allowed non-number state, like nothing - but setting to undefined makes
+            // the component uncontrolled which is not what we want
+            try {
+                value = parseInt(event.target.value, 10);
+
+                if (isNaN(value)) {
+                    // Not a number? don't update
+                    return;
+                }
+            } catch (e) {
+                return // If it can't be parsed to int, don't update
+            }
+
+            // Do nothing if out of range
+            if (!(0 <= value <= 999)) {
+                return
+            }
+        }
+
+        setNewTarget(value)
+    }
+
+    const onTargetKeyDown = (event) => {
+        // Handle enter to send here
+        if (event.keyCode === 13){
+            saveChange()
+            event.target.blur()
+        }
+    }
+
+    const onFocus = (event) => {
+        if (newTarget === ""){
+            setNewTarget(target)
+        }
+        setTimeout(() => {
+            event.target.select()
+        }, 0)
+    }
+
+    const changeTarget = (difference) => {
+        setNewTarget(prevState => {
+            let newValue
+            if (prevState === "") {
+                // Empty string means 'no value' so start at the current target from the server
+                newValue = target + difference
+            } else {
+                // Add to the current 'new value
+                newValue = newTarget + difference
+            }
+
+            // Abort any changes if that is out of bounds
+            if (!(0 <= newValue <= 999)) return prevState
+
+            return newValue
+        })
+    }
+
+    const increaseTarget = () => {
+        changeTarget(1)
+    }
+
+    const decreaseTarget = () => {
+        changeTarget(-1)
+    }
+
+    const saveChange = () => {
+        const value = newTarget
+
+        try {
+            parseInt(value)
+        } catch (e) {
+            // Abort if not number - shouldn't happen, but if it does just fail silently
+            return
+        }
+
+        const resetChange = () => {
+            // Small hack to avoid delays between setting the target and it appearing in the box from socket
+            setTargetValue(parseInt(value, 10))
+            setNewTarget("")
+        }
+
+        if (toolKey === "bed") {
+            setBedTarget(value).then(resetChange)
+        } else if (toolKey === "chamber") {
+            setChamberTarget(value).then(resetChange)
+        } else {
+            setToolTarget(value, toolKey).then(resetChange)
+        }
+    }
+
+    return (
+        <React.Fragment>
+            <Grid item xs={1}>
+                <Typography fontWeight={"bold"}>
+                    {name}
+                </Typography>
+            </Grid>
+            <Grid item xs={2}>
+                {actual}
+            </Grid>
+            <Grid item xs={4}>
+                <OutlinedInput
+                    size={"small"}
+                    value={newTarget}
+                    placeholder={target === 0 ? 'off' : targetValue}
+                    sx={{'& .MuiOutlinedInput-input': {textAlign: 'center'}}}
+                    startAdornment={
+                        <IconButton
+                            size={"small"}
+                            variant={"contained"}
+                            color={"secondary"}
+                            title={"Decrease target"}
+                            onChange={decreaseTarget}
+                        >
+                            <RemoveIcon />
+                        </IconButton>
+                    }
+                    endAdornment={
+                        <>
+                            <InputAdornment position={"end"}>°C</InputAdornment>
+                            <IconButton
+                                size={"small"}
+                                variant={"contained"}
+                                color={"secondary"}
+                                title={"Increase target"}
+                                onClick={increaseTarget}
+                            >
+                                <AddIcon />
+                            </IconButton>
+                        </>
+                    }
+                    onChange={onTargetChange}
+                    onKeyDown={onTargetKeyDown}
+                    onFocus={onFocus}
+                />
+                <Button
+                    variant={"outlined"}
+                    sx={{ml: 1, height: "100%"}}
+                    onClick={saveChange}
+                    disabled={newTarget === ""}
+                    title={"Save"}
+                >
+                    <CheckIcon />
+                </Button>
+            </Grid>
+            <Grid item xs={5} />
+        </React.Fragment>
+    )
+}
+
+
+/*
+ * API methods for setting temperatures
+ */
+
+function setBedTarget (target) {
+    return apiPost("/api/printer/bed", {
+        command: "target",
+        target: target,
+    })
+}
+
+function setChamberTarget (target) {
+    return apiPost("/api/printer/chamber", {
+        command: "target",
+        target: target
+    })
+}
+
+function setToolTarget (target, toolKey) {
+    return apiPost("/api/printer/tool", {
+        command: "target",
+        targets: {
+            [toolKey]: target
+        }
+    })
+}
+
+/*
+ * Utils
+ */
+
+function apiPost (route, data) {
+    return fetch(route, {
+        method: "POST",
+        headers: {
+            'Content-Type': "application/json"
+        },
+        body: JSON.stringify(data),
+        credentials: "include"}
+    ).catch(error => console.log(error))
 }
 
 function capitalizeFirstLetter(string) {

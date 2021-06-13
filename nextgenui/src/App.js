@@ -2,9 +2,7 @@ import * as React from "react";
 import Login from "./components/Login"
 import Main from "./components/Main"
 import Loading from "./components/Loading";
-
-import OctoPrintSocketClient from "./client";
-import {SocketProvider} from "./client/socketClient";
+import "./App.css"
 
 const login = (data) => {
     return fetch("./api/login", {
