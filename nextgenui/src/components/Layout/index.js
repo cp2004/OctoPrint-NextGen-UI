@@ -84,7 +84,7 @@ function OctoPrintUI ({selectedTab}) {
                 {
                     tabs.map(({tab: Tab}, index) => (
                         <TabPanel key={index} value={selectedTab} index={index}>
-                            <Tab />
+                            <Tab isActive={selectedTab === index} />
                         </TabPanel>
                     ))
                 }
