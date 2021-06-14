@@ -32,7 +32,7 @@ const targetColors = [
 ]
 
 
-export default function Temperature (props) {
+export default function Temperature ({isActive}) {
     const [tempData, setTempData] = React.useState([])
 
     const printerProfile = useProfiles().profiles._default  // TODO support for actual 'active' profile
@@ -69,6 +69,7 @@ export default function Temperature (props) {
             <TempGraph
                 tempData={tempData}
                 tools={tools}
+                isActive={isActive}
             />
             <TempControls tempData={tempData} tools={tools}/>
         </>
@@ -82,7 +83,7 @@ const tempLineProps = {
     strokeWidth: 2,
 }
 
-function TempGraph ({tempData, tools}) {
+function TempGraph ({tempData, tools, isActive}) {
 
     const actualLines = tools.map(({key, name}, index) =>
         <Line
@@ -125,7 +126,7 @@ function TempGraph ({tempData, tools}) {
 
     return (
         <Box sx={{mr: 2}}> {/* Make the graph look more in the centre*/}
-            <ResponsiveContainer width="100%" aspect={2}>
+            <ResponsiveContainer width={isActive ? "100%" : "100px"} aspect={2}>
                 <LineChart
                     width={500}
                     height={300}
@@ -210,7 +211,7 @@ const TempTooltip = ({active, payload, label}) => {
 
 function TempControls ({tempData, tools}) {
     const entries = tools.map(({key, name}) => (
-        <SingleControl tempData={tempData} toolKey={key} name={name} />
+        <SingleControl key={name} tempData={tempData} toolKey={key} name={name} />
     ))
 
     return (
@@ -238,7 +239,7 @@ function TempControls ({tempData, tools}) {
 }
 
 function SingleControl ({tempData, toolKey, name}){
-    const [targetValue, setTargetValue] = React.useState(0)
+    const [targetValue, setTargetValue] = React.useState("1")
     const [newTarget, setNewTarget] = React.useState("")
 
     const actual = tempData.length && tempData[tempData.length - 1][toolKey] ? tempData[tempData.length - 1][toolKey]["actual"] : 0
@@ -247,8 +248,7 @@ function SingleControl ({tempData, toolKey, name}){
     React.useEffect(() => {
         // Set target state whenever the tempData is updated
         // To show as a placeholder when nothing is being done
-        console.log(target)
-        setTargetValue(target)
+        setTargetValue(String(target))
     }, [setTargetValue, target])
 
     const onTargetChange = (event) => {
@@ -348,7 +348,7 @@ function SingleControl ({tempData, toolKey, name}){
     }
 
     return (
-        <React.Fragment>
+        <>
             <Grid item xs={1}>
                 <Typography fontWeight={"bold"}>
                     {name}
@@ -403,7 +403,7 @@ function SingleControl ({tempData, toolKey, name}){
                 </Button>
             </Grid>
             <Grid item xs={5} />
-        </React.Fragment>
+        </>
     )
 }
 
