@@ -124,6 +124,10 @@ function TempGraph ({tempData, tools, isActive}) {
         }
     }
 
+    if (!isActive) return null; // TODO minor hang when switching views, but probably better overall performance
+    // Since the graph is not updating in the background but we just keep holding state
+    // If possible, could stop rendering, but keep updating data? componentShouldUpdate style
+
     return (
         <Box sx={{mr: 2}}> {/* Make the graph look more in the centre*/}
             <ResponsiveContainer width={isActive ? "100%" : "100px"} aspect={2}>

@@ -7,6 +7,10 @@ import Box from "@material-ui/core/Box";
 import Container from "@material-ui/core/Container";
 import * as React from "react";
 import tabs from "../TabsList"
+import {Helmet} from "react-helmet-async";
+import {useState} from "react";
+import {useSettings} from "../../settings";
+import {useTheme} from "@material-ui/core";
 
 const LayoutRoot = styled('div')(
     ({ theme }) => ({
@@ -51,8 +55,13 @@ const Layout = (props) => {
         setSelectedTab(newValue)
     }
 
+    const name = useSettings().appearance.name
+
     return (
         <LayoutRoot>
+            <Helmet>
+                <title>{name === "" ? "OctoPrint" : name + " [OctoPrint]"}</title>
+            </Helmet>
             <Navbar onMobileNavOpen={() => setMobileNavOpen(true)} />
             <Sidebar
                 onMobileClose={() => setMobileNavOpen(false)}

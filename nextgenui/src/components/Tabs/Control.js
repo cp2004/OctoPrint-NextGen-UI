@@ -115,7 +115,7 @@ const ControlColumn = ({children, sx, ...rest}) => (
 
 const ControlButton = ({onClick, children, ...rest}) => {
     return (
-        <Button variant={"contained"} onClick={onClick} sx={{m: 2}} {...rest}>
+        <Button variant={"contained"} onClick={onClick} sx={{m: 1}} {...rest}>
             {children}
         </Button>
     )

@@ -15,6 +15,7 @@ import '@fontsource/roboto/700.css';
 
 import {QueryClient, QueryClientProvider} from "react-query";
 import {ReactQueryDevtools} from "react-query/devtools";
+import {HelmetProvider} from "react-helmet-async";
 
 const client = new QueryClient({
     defaultOptions: {
@@ -27,10 +28,12 @@ const client = new QueryClient({
 ReactDOM.render(
     <QueryClientProvider client={client}>
         <ThemeProvider theme={theme}>
+            <HelmetProvider>
             {/*<SnackbarProvider maxSnack={4}>*/}
                 <CssBaseline/>
                 <App/>
             {/*</SnackbarProvider>*/}
+            </HelmetProvider>
         </ThemeProvider>
         <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>,

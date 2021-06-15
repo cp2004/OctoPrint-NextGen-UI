@@ -22,7 +22,7 @@ const Navbar = ({ onMobileNavOpen, ...rest }) => {
                 <Box sx={{display: 'flex', alignItems: "center"}}>
                     <img src={tentacle} alt={"OctoPrint logo"} height={52}/>
                     <Typography sx={{pl: 3}} variant={"h5"} component={"h1"}>
-                        {settings.appearance.name}
+                        {settings.appearance.name !== "" ? settings.appearance.name : "OctoPrint"}
                     </Typography>
                 </Box>
                 <Box sx={{ flexGrow: 1 }} />
