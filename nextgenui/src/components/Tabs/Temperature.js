@@ -146,7 +146,7 @@ function TempGraph ({tempData, tools, isActive}) {
                     <YAxis tickFormatter={tempFormatter} />
                     <Tooltip content={TempTooltip} isAnimationActive={false} />
                     <Legend content={TempLegend}/>
-                    {targetLines}
+                    {targetLines}{/* This way around looks best for the graph, but now tooltip & legend are backwards */}
                     {actualLines}
                 </LineChart>
             </ResponsiveContainer>
@@ -195,7 +195,7 @@ const TempTooltip = ({active, payload, label}) => {
             <Paper elevation={1}>
                 <List dense>
                     <ListItem>
-                        <ListItemText><strong>{timeLabel}</strong></ListItemText>
+                        <ListItemText><strong>Time: {timeLabel}</strong></ListItemText>
                     </ListItem>
                     {payload.map((item) => {
                         const labelSplit = item.dataKey.split(".")
@@ -373,7 +373,7 @@ function SingleControl ({tempData, toolKey, name}){
                             variant={"contained"}
                             color={"secondary"}
                             title={"Decrease target"}
-                            onChange={decreaseTarget}
+                            onClick={decreaseTarget}
                         >
                             <RemoveIcon />
                         </IconButton>
