@@ -37,10 +37,33 @@ export function home (axes, opts){
 
 export function setFeedrate (factor, opts){
     const payload = {
-        factor: factor || 100
+        factor: parseInt(factor) || 100
     }
     return issuePrintHeadCommand("feedrate", payload, opts)
 }
 
-// TODO for definite: flowrate, extrusion
+export function setFlowrate (factor, opts){
+    const payload = {
+        factor: parseInt(factor) || 100
+    }
+
+    return issueToolCommand("flowrate", payload, opts)
+}
+
+export function extrude (amount, opts){
+    const payload = {
+        amount: parseInt(amount) || 5  // Leaving this as undefined
+    }
+
+    return issueToolCommand("extrude", payload, opts)
+}
+
+export function selectTool (tool, opts){
+    const payload = {
+        tool: tool || undefined
+    }
+
+    return issueToolCommand("select", payload, opts)
+}
+
 // TODO temperatures and get commands if necessary
