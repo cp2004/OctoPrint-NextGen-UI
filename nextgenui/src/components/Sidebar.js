@@ -30,7 +30,7 @@ const Sidebar = ({ onMobileClose, openMobile, selectedTab, onTabChange }) => {
                 >
                     {tabs.map((item, index) => (
                         <Tab
-                            sx={{"& > span": {alignItems: 'flex-start'}}}
+                            sx={{alignItems: 'flex-start'}}
                             key={index}
                             label={<TabItem title={item.title} icon={item.icon} />}
                             {...a11yProps(index)}
