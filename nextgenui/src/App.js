@@ -1,6 +1,6 @@
 import * as React from "react";
 import Login from "./components/Login"
-import Main from "./components/Main"
+import Main from "./components/Main/Main"
 import Loading from "./components/Loading";
 import "./App.css"
 

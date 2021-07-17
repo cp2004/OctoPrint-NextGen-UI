@@ -4,19 +4,18 @@ import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container"
 import Alert from "@material-ui/core/Alert";
 import AlertTitle from "@material-ui/core/AlertTitle";
-
-import Loading from "../Loading";
-import Layout from "../Layout";
-import {SettingsProvider} from "../../settings";
-import {SocketProvider, useSocket} from "../../client/socketClient";
-import {ProfileProvider} from "../../settings/printerprofiles";
-import OctoPrintSocketClient from "../../client";
+import Loading from "./Loading";
+import Layout from "./Layout";
+import {SettingsProvider} from "../settings";
+import {SocketProvider, useSocket} from "../client/socketClient";
+import {ProfileProvider} from "../settings/printerprofiles";
+import OctoPrintSocketClient from "../client";
 
 // WDS uses sockjs for hot-reloading, so OctoPrint's socket does not
 // work with the built in proxy & we have to manually override the URL here
 let SOCKET_URL
 if (process.env.NODE_ENV !== "production"){
-    SOCKET_URL = "http://localhost:5000"  // CHANGE THIS when you are developing, TODO document
+    SOCKET_URL = "http://localhost:5000"  // TODO CHANGE THIS when you are developing against a different server
 } else {
     SOCKET_URL = "."
 }
