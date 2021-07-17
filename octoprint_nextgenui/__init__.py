@@ -83,7 +83,7 @@ class NextGenUIPlugin(octoprint.plugin.SettingsPlugin,
                 current=self._plugin_version,
 
                 # update method: pip
-                pip="https://github.com/cp2004/OctoPrint-NextGen-UI/archive/{target_version}.zip"
+                pip="https://github.com/cp2004/OctoPrint-NextGen-UI/releases/download/{target_version}/release.zip"
             )
         )
 
