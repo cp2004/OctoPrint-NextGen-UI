@@ -71,7 +71,6 @@ jobs:
           npm run release
       - name: 🔨 Build plugin package
         run: |
-          cd ..
           python setup.py sdist --formats=zip
       - name: 🚚 rename to sdist.zip
         run: |

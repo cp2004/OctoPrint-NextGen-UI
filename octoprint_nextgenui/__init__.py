@@ -94,7 +94,7 @@ class InvalidTemplateError(Exception):
 
 __plugin_name__ = "NextGenUI"
 __plugin_pythoncompat__ = ">=3.7,<4"
-__plugin_version__ __version__
+__plugin_version__ = __version__
 
 def __plugin_load__():
     global __plugin_implementation__
