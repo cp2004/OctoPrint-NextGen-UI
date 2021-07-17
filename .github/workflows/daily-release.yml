@@ -1,0 +1,40 @@
+name: Release Daily Version if necessary
+on:
+  schedule:
+    - cron: '59 23 * * *'
+
+jobs:
+  tag:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: fregante/daily-version-action@v1
+        name: Create tag if necessary
+        id: daily-version
+    outputs:
+      created: ${{ steps.daily-version.outputs.created }}
+      version: ${{ steps.daily-version.outputs.version }}
+
+  release:
+    needs: tag
+    if: needs.tag.outputs.created
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: fregante/release-with-changelog@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          title: 'NextGenUI {tag}'
+          template: |
+            ### ⚠️ This release may not be stable, proceed with caution ⚠️
+
+            This is an auto-generated release with the latest changes. It may be incomplete, unstable or break other things.
+
+            ### Changes
+
+            {commits}
+
+            {range}
+          tag: needs.tag.outputs.version
