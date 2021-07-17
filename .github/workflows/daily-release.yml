@@ -2,6 +2,7 @@ name: Release Daily Version if necessary
 on:
   schedule:
     - cron: '59 23 * * *'
+  workflow_dispatch:
 
 jobs:
   tag:
