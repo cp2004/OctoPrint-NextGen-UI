@@ -100,7 +100,7 @@ jobs:
           cp dist/sdist.zip release.zip
       - name: 🥅 Catch release ID
         id: get_release
-        uses: cp2004/get-release@v1.3.0
+        uses: cp2004/get-release@1.3.0
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
