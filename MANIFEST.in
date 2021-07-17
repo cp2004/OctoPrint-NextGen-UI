@@ -1,4 +1,7 @@
 include README.md
+include LICENSE.txt
 recursive-include octoprint_nextgenui/templates *
 recursive-include octoprint_nextgenui/translations *
 recursive-include octoprint_nextgenui/static *
+include versioneer.py
+include octoprint_nextgenui/_version.py

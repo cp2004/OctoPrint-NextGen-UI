@@ -6,8 +6,11 @@ from flask import Response
 import octoprint.plugin
 from octoprint.util import to_bytes
 
+from ._version import get_versions
+__version__ = get_versions()["version"]
+del get_versions
+
 PATH_TO_INDEX = os.path.join(os.path.dirname(__file__), "static", "index.html")
-print(PATH_TO_INDEX)
 
 SUPPORTED_COMPONENT_TYPES = ["settings"]
 
@@ -91,7 +94,7 @@ class InvalidTemplateError(Exception):
 
 __plugin_name__ = "NextGenUI"
 __plugin_pythoncompat__ = ">=3.7,<4"
-
+__plugin_version__ __version__
 
 def __plugin_load__():
     global __plugin_implementation__
