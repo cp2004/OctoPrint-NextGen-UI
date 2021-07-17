@@ -46,6 +46,7 @@ export default function RightSideBar (props) {
         filament: {}
     })
 
+    /* eslint-disable-next-line */
     const [progressState, setProgressState] = useState({
         completion: undefined,
         filepos: undefined,
