@@ -9,6 +9,11 @@ this UI may ever be available for production use.**
 
 If you are a professional JavaScript/React developer, please turn away and save yourself some pain.
 
+## Install
+```
+https://github.com/cp2004/OctoPrint-NextGen-UI/releases/latest/download/release.zip
+```
+
 ## Development
 
 Frontend development is done using Create React App, to take advantage of things like auto-reloading.
