@@ -5,6 +5,14 @@ export function get(route, additionalHeaders) {
     return fetch(route, {...requestOptions, ...additionalHeaders}).then(response => response.json())
 }
 
+export function getWithData(route, content, opts) {
+    const paramString = new URLSearchParams({...content}).toString()
+
+    route = route + "?" + paramString
+
+    return get(route, opts)
+}
+
 export function post(route, content, additionalHeaders) {
     if (!route.startsWith(".")){
         route = "." + route
@@ -14,6 +22,16 @@ export function post(route, content, additionalHeaders) {
         ...postOptions,
         ...additionalHeaders
     })
+}
+
+export function issueCommand (url, command, payload, opts) {
+    payload = payload || {}
+
+    const data = {
+        ...payload,
+        command: command
+    }
+    return post(url, data, opts)
 }
 
 
