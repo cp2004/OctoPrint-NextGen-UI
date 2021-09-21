@@ -9,6 +9,7 @@ import * as React from "react";
 import tabs from "../TabsList"
 import {Helmet} from "react-helmet-async";
 import {useSettings} from "../../settings";
+import {Fade} from "@material-ui/core";
 
 const LayoutRoot = styled('div')(
     ({ theme }) => ({
@@ -104,15 +105,17 @@ function TabPanel (props) {
     const { children, value, index, ...other } = props;
 
     return (
-        <div
-            role="tabpanel"
-            style={{display: (value === index) ? 'block' : 'none'}}
-            id={`vertical-tabpanel-${index}`}
-            aria-labelledby={`vertical-tab-${index}`}
-            {...other}
-        >
-            {children}
-        </div>
+        <Fade in={value === index}>
+            <Box
+                role="tabpanel"
+                style={{display: (value === index) ? 'block' : 'none'}}
+                id={`vertical-tabpanel-${index}`}
+                aria-labelledby={`vertical-tab-${index}`}
+                {...other}
+            >
+                {children}
+            </Box>
+        </Fade>
     );
 }
 

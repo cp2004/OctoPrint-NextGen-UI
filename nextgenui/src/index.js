@@ -7,11 +7,11 @@ import { ThemeProvider } from "@material-ui/core/styles";
 import App from './App';
 import theme from "./theme"
 
-// Load MUI roboto fonts
-import '@fontsource/roboto/300.css';
-import '@fontsource/roboto/400.css';
-import '@fontsource/roboto/500.css';
-import '@fontsource/roboto/700.css';
+// Loading Sora font
+import '@fontsource/sora/300.css'
+import '@fontsource/sora/400.css'
+import '@fontsource/sora/500.css'
+import '@fontsource/sora/700.css'
 
 import {QueryClient, QueryClientProvider} from "react-query";
 import {ReactQueryDevtools} from "react-query/devtools";
