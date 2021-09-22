@@ -143,7 +143,7 @@ function TempGraph ({tempData, tools, isActive}) {
                     }}
                 >
                     <XAxis tickFormatter={timeFormatter} dataKey="time"/>
-                    <YAxis tickFormatter={tempFormatter} />
+                    <YAxis tickFormatter={tempFormatter} domain={[0, dataMax => dataMax > 250 ? dataMax : 250]}/>
                     <Tooltip content={TempTooltip} isAnimationActive={false} />
                     <Legend content={TempLegend}/>
                     {targetLines}{/* This way around looks best for the graph, but now tooltip & legend are backwards */}

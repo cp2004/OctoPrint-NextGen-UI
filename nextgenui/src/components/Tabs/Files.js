@@ -33,6 +33,7 @@ import DownloadIcon from '@mui/icons-material/Download';
 import TimerIcon from '@mui/icons-material/Timer';
 import StraightenIcon from '@mui/icons-material/Straighten';
 import FolderIcon from '@mui/icons-material/Folder';
+import {visuallyHidden} from "@mui/utils";
 
 // File browser table heavily based on demos from https://next.material-ui.com/components/tables/
 /*
@@ -109,7 +110,7 @@ function EnhancedTableHead(props) {
                             >
                                 {headCell.label}
                                 {orderBy === headCell.id ? (
-                                    <Box component="span" sx={{visibility: 'hidden'}}>
+                                    <Box component="span" sx={visuallyHidden}>
                                         {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
                                     </Box>
                                 ) : null}
