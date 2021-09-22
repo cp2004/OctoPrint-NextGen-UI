@@ -1,9 +1,9 @@
 import * as React from "react"
 import {useQuery} from "react-query";
-import Typography from "@material-ui/core/Typography";
-import Container from "@material-ui/core/Container"
-import Alert from "@material-ui/core/Alert";
-import AlertTitle from "@material-ui/core/AlertTitle";
+import Typography from "@mui/material/Typography";
+import Container from "@mui/material/Container"
+import Alert from "@mui/material/Alert";
+import AlertTitle from "@mui/material/AlertTitle";
 import Loading from "./Loading";
 import Layout from "./Layout";
 import {SettingsProvider} from "../settings";

@@ -1,38 +1,38 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import Box from '@material-ui/core/Box';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TablePagination from '@material-ui/core/TablePagination';
-import TableRow from '@material-ui/core/TableRow';
-import TableSortLabel from '@material-ui/core/TableSortLabel';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import Paper from '@material-ui/core/Paper';
-import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
-import DeleteIcon from '@material-ui/icons/Delete';
-import {Collapse, ListItemIcon, ListItemText, Menu, MenuList, TextField} from "@material-ui/core";
-import CheckIcon from '@material-ui/icons/Check';
-import CloseIcon from '@material-ui/icons/Close';
-import ViewInArIcon from '@material-ui/icons/ViewInAr';
-import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
-import SearchIcon from '@material-ui/icons/Search';
-import CachedIcon from '@material-ui/icons/Cached';
-import SdCardIcon from '@material-ui/icons/SdCard';
-import EjectIcon from '@material-ui/icons/Eject';
+import Box from '@mui/material/Box';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TablePagination from '@mui/material/TablePagination';
+import TableRow from '@mui/material/TableRow';
+import TableSortLabel from '@mui/material/TableSortLabel';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import Paper from '@mui/material/Paper';
+import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
+import DeleteIcon from '@mui/icons-material/Delete';
+import {Collapse, ListItemIcon, ListItemText, Menu, MenuList, TextField} from "@mui/material";
+import CheckIcon from '@mui/icons-material/Check';
+import CloseIcon from '@mui/icons-material/Close';
+import ViewInArIcon from '@mui/icons-material/ViewInAr';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import SearchIcon from '@mui/icons-material/Search';
+import CachedIcon from '@mui/icons-material/Cached';
+import SdCardIcon from '@mui/icons-material/SdCard';
+import EjectIcon from '@mui/icons-material/Eject';
 import fileSize from "filesize";
-import MenuItem from "@material-ui/core/MenuItem";
-import PrintIcon from '@material-ui/icons/Print';
-import FileMoveIcon from '@material-ui/icons/DriveFileMove';
-import DownloadIcon from '@material-ui/icons/Download';
-import TimerIcon from '@material-ui/icons/Timer';
-import StraightenIcon from '@material-ui/icons/Straighten';
-import FolderIcon from '@material-ui/icons/Folder';
+import MenuItem from "@mui/material/MenuItem";
+import PrintIcon from '@mui/icons-material/Print';
+import FileMoveIcon from '@mui/icons-material/DriveFileMove';
+import DownloadIcon from '@mui/icons-material/Download';
+import TimerIcon from '@mui/icons-material/Timer';
+import StraightenIcon from '@mui/icons-material/Straighten';
+import FolderIcon from '@mui/icons-material/Folder';
 
 // File browser table heavily based on demos from https://next.material-ui.com/components/tables/
 /*
@@ -165,10 +165,10 @@ const EnhancedTableToolbar = ({searchTerm, onSearchChange}) => {
                 sx={{"&> *": {mx: 1}}}
                 width={"100%"}
             >
-                <IconButton onClick={handleSdClick}>
+                <IconButton onClick={handleSdClick} size="large">
                     <SdCardIcon />
                 </IconButton>
-                <IconButton>
+                <IconButton size="large">
                     <CachedIcon />
                 </IconButton>
                 <TextField
@@ -208,7 +208,7 @@ const EnhancedTableToolbar = ({searchTerm, onSearchChange}) => {
                 </Menu>
             </Box>
         </Toolbar>
-    )
+    );
 }
 
 export default function Files() {

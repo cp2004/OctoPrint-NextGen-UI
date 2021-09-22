@@ -2,18 +2,18 @@ import * as React from "react"
 import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import {useSocket} from "../../client/socketClient";
 import {useProfiles} from "../../settings/printerprofiles";
-import ListItem from "@material-ui/core/ListItem";
-import Box from "@material-ui/core/Box";
-import Chip from "@material-ui/core/Chip";
-import CircleIcon from '@material-ui/icons/Circle';
-import AddIcon from '@material-ui/icons/Add';
-import RemoveIcon from '@material-ui/icons/Remove';
-import {IconButton, InputAdornment, ListItemText, OutlinedInput, Paper, chipClasses} from "@material-ui/core";
-import List from "@material-ui/core/List";
-import Typography from "@material-ui/core/Typography";
-import Button from "@material-ui/core/Button";
-import Grid from "@material-ui/core/Grid";
-import CheckIcon from '@material-ui/icons/Check';
+import ListItem from "@mui/material/ListItem";
+import Box from "@mui/material/Box";
+import Chip from "@mui/material/Chip";
+import CircleIcon from '@mui/icons-material/Circle';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
+import {IconButton, InputAdornment, ListItemText, OutlinedInput, Paper, chipClasses} from "@mui/material";
+import List from "@mui/material/List";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import Grid from "@mui/material/Grid";
+import CheckIcon from '@mui/icons-material/Check';
 
 const actualColors = [
     "blue",

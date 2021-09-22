@@ -1,6 +1,6 @@
-import Container from "@material-ui/core/Container";
-import LinearProgress from "@material-ui/core/LinearProgress";
-import Typography from "@material-ui/core/Typography";
+import Container from "@mui/material/Container";
+import LinearProgress from "@mui/material/LinearProgress";
+import Typography from "@mui/material/Typography";
 
 export default function Loading (props) {
     return (

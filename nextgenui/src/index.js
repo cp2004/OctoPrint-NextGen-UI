@@ -1,7 +1,7 @@
 import * as React from 'react';
 import ReactDOM from 'react-dom';
-import CssBaseline from "@material-ui/core/CssBaseline";
-import { ThemeProvider } from "@material-ui/core/styles";
+import CssBaseline from "@mui/material/CssBaseline";
+import { ThemeProvider, StyledEngineProvider } from "@mui/material/styles";
 // import {SnackbarProvider, snackbarProvider} from "notistack"  // waiting for MUI-V5 compatible patch
 
 import App from './App';

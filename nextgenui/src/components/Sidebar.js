@@ -1,8 +1,8 @@
-import Box from "@material-ui/core/Box"
-import Drawer from "@material-ui/core/Drawer";
-import Tab from "@material-ui/core/Tab";
-import Tabs from "@material-ui/core/Tabs"
-import Typography from "@material-ui/core/Typography";
+import Box from "@mui/material/Box"
+import Drawer from "@mui/material/Drawer";
+import Tab from "@mui/material/Tab";
+import Tabs from "@mui/material/Tabs"
+import Typography from "@mui/material/Typography";
 import tabs from "./TabsList"
 
 function a11yProps(index) {

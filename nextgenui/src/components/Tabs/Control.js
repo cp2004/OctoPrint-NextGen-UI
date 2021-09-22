@@ -1,28 +1,28 @@
 import * as React from "react";
 
 // Material UI
-import Grid from "@material-ui/core/Grid";
-import Box from "@material-ui/core/Box";
-import InputAdornment from "@material-ui/core/InputAdornment"
-import Menu from "@material-ui/core/Menu"
-import MenuItem from "@material-ui/core/MenuItem"
-import OutlinedInput from "@material-ui/core/OutlinedInput"
-import Paper from "@material-ui/core/Paper"
-import ToggleButton from "@material-ui/core/ToggleButton"
-import ToggleButtonGroup from "@material-ui/core/ToggleButtonGroup"
-import Button from "@material-ui/core/Button";
-import Alert from "@material-ui/core/Alert"
-import Link from "@material-ui/core/Link";
+import Grid from "@mui/material/Grid";
+import Box from "@mui/material/Box";
+import InputAdornment from "@mui/material/InputAdornment"
+import Menu from "@mui/material/Menu"
+import MenuItem from "@mui/material/MenuItem"
+import OutlinedInput from "@mui/material/OutlinedInput"
+import Paper from "@mui/material/Paper"
+import ToggleButton from "@mui/material/ToggleButton"
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup"
+import Button from "@mui/material/Button";
+import Alert from "@mui/material/Alert"
+import Link from "@mui/material/Link";
 
 // Icon imports
-import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
-import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
-import HomeIcon from '@material-ui/icons/Home';
-import Typography from "@material-ui/core/Typography";
-import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
-import CheckIcon from "@material-ui/icons/Check"
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import HomeIcon from '@mui/icons-material/Home';
+import Typography from "@mui/material/Typography";
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import CheckIcon from "@mui/icons-material/Check"
 
 // Local imports
 import useIsBrowserVisible from "../../hooks/useIsBrowserVisible";

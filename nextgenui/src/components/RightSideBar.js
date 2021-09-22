@@ -1,13 +1,13 @@
 import * as React from "react";
-import Drawer from "@material-ui/core/Drawer"
-import List from "@material-ui/core/List"
-import ListItem from "@material-ui/core/ListItem"
-import Box from "@material-ui/core/Box";
-import PowerIcon from '@material-ui/icons/Power';
-import FileIcon from '@material-ui/icons/AttachFile';
+import Drawer from "@mui/material/Drawer"
+import List from "@mui/material/List"
+import ListItem from "@mui/material/ListItem"
+import Box from "@mui/material/Box";
+import PowerIcon from '@mui/icons-material/Power';
+import FileIcon from '@mui/icons-material/AttachFile';
 import {useState} from "react";
 import {useSocket} from "../client/socketClient";
-import {Skeleton} from "@material-ui/core";
+import {Skeleton} from "@mui/material";
 
 function SideBarItem (props) {
     return (

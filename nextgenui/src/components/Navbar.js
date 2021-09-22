@@ -1,14 +1,14 @@
 import * as React from 'react'
-import AppBar from "@material-ui/core/AppBar"
-import Box from "@material-ui/core/Box"
-import IconButton from "@material-ui/core/IconButton"
-import Toolbar from "@material-ui/core/Toolbar";
-import MenuIcon from '@material-ui/icons/Menu';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import AppBar from "@mui/material/AppBar"
+import Box from "@mui/material/Box"
+import IconButton from "@mui/material/IconButton"
+import Toolbar from "@mui/material/Toolbar";
+import MenuIcon from '@mui/icons-material/Menu';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import tentacle from "../images/tentacle.svg"
 import {useSettings} from "../settings";
-import Typography from "@material-ui/core/Typography";
-import {Tooltip} from "@material-ui/core";
+import Typography from "@mui/material/Typography";
+import {Tooltip} from "@mui/material";
 
 const Navbar = ({ onMobileNavOpen, ...rest }) => {
 
@@ -29,16 +29,13 @@ const Navbar = ({ onMobileNavOpen, ...rest }) => {
                 <Box sx={{ flexGrow: 1 }} />
                 <Box sx={{ display: {lg: 'block', xs: 'none'}}} >
                     <Tooltip title={"Exit"}>
-                        <IconButton color={"inherit"} href={"./"}>
+                        <IconButton color={"inherit"} href={"./"} size="large">
                             <ExitToAppIcon />
                         </IconButton>
                     </Tooltip>
                 </Box>
                 <Box sx={{ display: {xs: 'block', lg: 'none'}}}>
-                    <IconButton
-                        color="inherit"
-                        onClick={onMobileNavOpen}
-                    >
+                    <IconButton color="inherit" onClick={onMobileNavOpen} size="large">
                         <MenuIcon />
                     </IconButton>
                 </Box>

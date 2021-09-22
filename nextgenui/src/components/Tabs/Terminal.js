@@ -1,21 +1,21 @@
 import * as React from "react"
 
-import {styled} from "@material-ui/core/styles";
-import List from "@material-ui/core/List";
-import Paper from "@material-ui/core/Paper"
-import FormControlLabel from "@material-ui/core/FormControlLabel"
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import OutlinedInput from "@material-ui/core/OutlinedInput";
-import Switch from "@material-ui/core/Switch";
-import Tooltip from "@material-ui/core/Tooltip"
-import Button from "@material-ui/core/Button";
-import Box from "@material-ui/core/Box";
-import Typography from "@material-ui/core/Typography";
+import {styled} from "@mui/material/styles";
+import List from "@mui/material/List";
+import Paper from "@mui/material/Paper"
+import FormControlLabel from "@mui/material/FormControlLabel"
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import Switch from "@mui/material/Switch";
+import Tooltip from "@mui/material/Tooltip"
+import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
 
-import SendIcon from '@material-ui/icons/Send';
-import ContentCopyIcon from '@material-ui/icons/ContentCopy';
-import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
+import SendIcon from '@mui/icons-material/Send';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
 import {Virtuoso} from "react-virtuoso";
 import copy from 'copy-to-clipboard'
