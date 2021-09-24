@@ -4,6 +4,7 @@ import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs"
 import Typography from "@mui/material/Typography";
 import tabs from "./TabsList"
+import {Link as RouterLink, useLocation} from "react-router-dom";
 
 function a11yProps(index) {
     return {
@@ -12,7 +13,9 @@ function a11yProps(index) {
     };
 }
 
-const Sidebar = ({ onMobileClose, openMobile, selectedTab, onTabChange }) => {
+const Sidebar = ({ onMobileClose, openMobile }) => {
+    const {pathname: selectedTab} = useLocation()
+
     const content = (
         <Box
             sx={{
@@ -26,7 +29,6 @@ const Sidebar = ({ onMobileClose, openMobile, selectedTab, onTabChange }) => {
                     orientation={"vertical"}
                     variant={"scrollable"}
                     value={selectedTab}
-                    onChange={onTabChange}
                 >
                     {tabs.map((item, index) => (
                         <Tab
@@ -34,6 +36,9 @@ const Sidebar = ({ onMobileClose, openMobile, selectedTab, onTabChange }) => {
                             key={index}
                             label={<TabItem title={item.title} icon={item.icon} />}
                             {...a11yProps(index)}
+                            component={RouterLink}
+                            to={`/${item.id}`}
+                            value={`/${item.id}`}
                         />
                     ))}
                 </Tabs>

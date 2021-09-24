@@ -10,6 +10,7 @@ import tabs from "../TabsList"
 import {Helmet} from "react-helmet-async";
 import {useSettings} from "../../settings";
 import {Fade} from "@mui/material";
+import {HashRouter as Router, Route, Redirect} from "react-router-dom";
 
 const LayoutRoot = styled('div')(
     ({ theme }) => ({
@@ -48,40 +49,35 @@ const LayoutContent = styled('div')({
 
 const Layout = (props) => {
     const [isMobileNavOpen, setMobileNavOpen] = React.useState(false);
-    const [selectedTab, setSelectedTab] = React.useState(0)
-
-    const handleTabChange = (event, newValue) => {
-        setSelectedTab(newValue)
-    }
 
     const name = useSettings().appearance.name
 
     return (
-        <LayoutRoot>
-            <Helmet>
-                <title>{name === "" ? "OctoPrint" : name + " [OctoPrint]"}</title>
-            </Helmet>
-            <Navbar onMobileNavOpen={() => setMobileNavOpen(true)} />
-            <Sidebar
-                onMobileClose={() => setMobileNavOpen(false)}
-                openMobile={isMobileNavOpen}
-                selectedTab={selectedTab}
-                onTabChange={handleTabChange}
-            />
-            <LayoutWrapper>
-                <LayoutContainer>
-                    <LayoutContent>
-                        <OctoPrintUI selectedTab={selectedTab} /> {/*TODO moving this here is suboptimal, wanted it to be generic layout*/}
-                    </LayoutContent>
-                </LayoutContainer>
-            </LayoutWrapper>
-            {/* TODO responsive sidebar? */}
-            <RightSideBar />
-        </LayoutRoot>
+        <Router>
+            <LayoutRoot>
+                <Helmet>
+                    <title>{name === "" ? "OctoPrint" : name + " [OctoPrint]"}</title>
+                </Helmet>
+                <Navbar onMobileNavOpen={() => setMobileNavOpen(true)} />
+                <Sidebar
+                    onMobileClose={() => setMobileNavOpen(false)}
+                    openMobile={isMobileNavOpen}
+                />
+                <LayoutWrapper>
+                    <LayoutContainer>
+                        <LayoutContent>
+                            <OctoPrintUI /> {/*TODO moving this here is suboptimal, wanted it to be generic layout*/}
+                        </LayoutContent>
+                    </LayoutContainer>
+                </LayoutWrapper>
+                {/* TODO responsive sidebar? */}
+                <RightSideBar />
+            </LayoutRoot>
+        </Router>
     );
 };
 
-function OctoPrintUI ({selectedTab}) {
+function OctoPrintUI () {
     return (
         <Box sx={{
             backgroundColor: 'background.default',
@@ -90,25 +86,37 @@ function OctoPrintUI ({selectedTab}) {
         }}>
             <Container sx={{overflowY: 'visible'}} maxWidth={false}>
                 {
-                    tabs.map(({tab: Tab}, index) => (
-                        <TabPanel key={index} value={selectedTab} index={index}>
-                            <Tab isActive={selectedTab === index} />
-                        </TabPanel>
+                    tabs.map(({tab: Tab, id}, index) => (
+                        <Route path={`/${id}`} children={({match}) => {
+                            const active = !!match
+
+                            return (
+                                <TabPanel key={index} active={active} index={index}>
+                                    <Tab isActive={active} />
+                                </TabPanel>
+                            )
+                        }} />
                     ))
                 }
+                <Route
+                    path={"*"}
+                    children={({match}) => (
+                        match && <Redirect to={`/${tabs[0].id}`} />
+                    )}
+                />
             </Container>
         </Box>
     )
 }
 
 function TabPanel (props) {
-    const { children, value, index, ...other } = props;
+    const { children, active, index, ...other } = props;
 
     return (
-        <Fade in={value === index}>
+        <Fade in={active}>
             <Box
                 role="tabpanel"
-                style={{display: (value === index) ? 'block' : 'none'}}
+                style={{display: (active) ? 'block' : 'none'}}
                 id={`vertical-tabpanel-${index}`}
                 aria-labelledby={`vertical-tab-${index}`}
                 {...other}

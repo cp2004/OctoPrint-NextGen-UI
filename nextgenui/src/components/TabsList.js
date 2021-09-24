@@ -15,32 +15,38 @@ const tabs = [
     {
         icon: ThermostatIcon,
         title: 'Temperature',
-        tab: Temperature
+        tab: Temperature,
+        id: "temperature"
     },
     {
         icon: ControlCameraIcon,
         title: 'Control',
         tab: Control,
+        id: "control"
     },
     {
         icon: FolderOpenOutlinedIcon,
         title: 'Files',
-        tab: Files
+        tab: Files,
+        id: "files",
     },
     {
         icon: ChatOutlinedIcon,
         title: 'Terminal',
-        tab: Terminal
+        tab: Terminal,
+        id: "terminal"
     },
     {
         icon: VideoOutlinedIcon,
         title: 'Timelapse',
-        tab: Timelapse
+        tab: Timelapse,
+        id: "timelapse"
     },
     {
         icon: SettingsIcon,
         title: 'Settings',
         tab: Settings,
+        id: "settings"
     },
 ]
 
