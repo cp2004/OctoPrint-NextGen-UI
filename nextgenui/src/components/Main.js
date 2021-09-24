@@ -6,9 +6,9 @@ import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import Loading from "./Loading";
 import Layout from "./Layout";
-import {SettingsProvider} from "../settings";
+import {SettingsProvider} from "../providers/settings";
 import OctoPrintSocketClient, {SocketProvider, useSocket} from "../api/socket";
-import {ProfileProvider} from "../settings/printerprofiles";
+import {ProfileProvider} from "../providers/printerprofiles";
 
 // WDS uses sockjs for hot-reloading, so OctoPrint's socket does not
 // work with the built in proxy & we have to manually override the URL here

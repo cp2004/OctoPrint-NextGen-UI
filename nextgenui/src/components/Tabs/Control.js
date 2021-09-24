@@ -26,10 +26,10 @@ import CheckIcon from "@mui/icons-material/Check"
 
 // Local imports
 import useIsBrowserVisible from "../../hooks/useIsBrowserVisible";
-import {useSettings} from "../../settings";
+import {useSettings} from "../../providers/settings";
 import {jog, home, extrude, selectTool, setFlowrate as printer_setFlowrate, setFeedrate as printer_setFeedrate} from "../../api/printer";
 import {sendGcode} from "../../api/control";
-import {useProfiles} from "../../settings/printerprofiles";
+import {useProfiles} from "../../providers/printerprofiles";
 
 
 export default function Control ({isActive}) {

@@ -21,7 +21,7 @@ import {Virtuoso} from "react-virtuoso";
 import copy from 'copy-to-clipboard'
 import {nanoid} from "nanoid/non-secure"
 
-import {useSocket} from "../../client/socketClient";
+import {useSocket} from "../../api/socket";
 import {sendGcode} from "../../api/control";
 
 const TerminalContainer = styled(List)({

@@ -6,7 +6,7 @@ import Toolbar from "@mui/material/Toolbar";
 import MenuIcon from '@mui/icons-material/Menu';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import tentacle from "../images/tentacle.svg"
-import {useSettings} from "../settings";
+import {useSettings} from "../providers/settings";
 import Typography from "@mui/material/Typography";
 import {Tooltip} from "@mui/material";
 

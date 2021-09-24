@@ -6,7 +6,7 @@ import Box from "@mui/material/Box";
 import PowerIcon from '@mui/icons-material/Power';
 import FileIcon from '@mui/icons-material/AttachFile';
 import {useState} from "react";
-import {useSocket} from "../client/socketClient";
+import {useSocket} from "../api/socket";
 import {Skeleton} from "@mui/material";
 
 function SideBarItem (props) {

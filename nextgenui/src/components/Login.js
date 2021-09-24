@@ -11,7 +11,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 
-import OctoPrintLogo from "../../images/octoprint.png";
+import OctoPrintLogo from "../images/octoprint.png";
 
 export default function SignIn({onLogin}) {  // TODO use loading to show spinner in button?
     const [remember, setRemember] = React.useState(false)

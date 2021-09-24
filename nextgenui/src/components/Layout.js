@@ -1,14 +1,14 @@
 // Dashboard layout adapted from https://github.com/devias-io/material-kit-react, MIT
 import { styled } from '@mui/material/styles';
-import Navbar from "../Navbar"
-import Sidebar from "../Sidebar";
-import RightSideBar from "../RightSideBar";
+import Navbar from "./Navbar"
+import Sidebar from "./Sidebar";
+import RightSideBar from "./RightSideBar";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import * as React from "react";
-import tabs from "../TabsList"
+import tabs from "./TabsList"
 import {Helmet} from "react-helmet-async";
-import {useSettings} from "../../settings";
+import {useSettings} from "../providers/settings";
 import {Fade} from "@mui/material";
 import {HashRouter as Router, Route, Redirect} from "react-router-dom";
 
