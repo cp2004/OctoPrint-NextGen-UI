@@ -8,10 +8,10 @@ import App from './App';
 import theme from "./theme"
 
 // Loading Sora font
-import '@fontsource/sora/300.css'
 import '@fontsource/sora/400.css'
 import '@fontsource/sora/500.css'
 import '@fontsource/sora/700.css'
+import '@fontsource/sora/800.css'
 
 import {QueryClient, QueryClientProvider} from "react-query";
 import {ReactQueryDevtools} from "react-query/devtools";
