@@ -203,7 +203,7 @@ class OctoPrintSocketClient {
 export default OctoPrintSocketClient
 
 
-const SocketContext = React.createContext()
+const SocketContext = React.createContext(null)
 
 export const SocketProvider = SocketContext.Provider
 
