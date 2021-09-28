@@ -1,7 +1,7 @@
 import * as React from "react"
 import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import {useSocket} from "../../api/socket";
-import {useProfiles} from "../../providers/printerprofiles";
+import {useActiveProfile, useProfiles} from "../../providers/printerprofiles";
 import ListItem from "@mui/material/ListItem";
 import Box from "@mui/material/Box";
 import Chip from "@mui/material/Chip";
@@ -35,7 +35,7 @@ const targetColors = [
 export default function Temperature ({isActive}) {
     const [tempData, setTempData] = React.useState([])
 
-    const printerProfile = useProfiles().profiles._default  // TODO support for actual 'active' profile
+    const printerProfile = useActiveProfile()
 
     const numExtruders = printerProfile.extruder.count
     const hasBed = printerProfile.heatedBed

@@ -29,7 +29,7 @@ import useIsBrowserVisible from "../../hooks/useIsBrowserVisible";
 import {useSettings} from "../../providers/settings";
 import {jog, home, extrude, selectTool, setFlowrate as printer_setFlowrate, setFeedrate as printer_setFeedrate} from "../../api/printer";
 import {sendGcode} from "../../api/control";
-import {useProfiles} from "../../providers/printerprofiles";
+import {useActiveProfile, useProfiles} from "../../providers/printerprofiles";
 
 
 export default function Control ({isActive}) {
@@ -174,7 +174,7 @@ function ExtruderControls () {
         extrude(-extrusionDistance)
     }
 
-    const tools = [...Array(useProfiles().profiles._default.extruder.count).keys()] // TODO active profile
+    const tools = [...Array(useActiveProfile().extruder.count).keys()]
 
     return (
         <Grid container spacing={0} sx={{justifyContent: 'center', "& > div":{mb: 2} }}>

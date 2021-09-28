@@ -15,18 +15,16 @@ export function useProfiles() {
 }
 
 export function useActiveProfile () {
-    // TODO this doesn't seem to work, always giving me back the empty list ?!
     const context = React.useContext(ProfileContext)
     let selectedProfile = {}
-    if (context.profiles && context.profiles.length){
+    if (context.profiles){
         Object.values(context.profiles).forEach((profile) => {
             selectedProfile = profile
-            // if (profile.active) {
-            //     selectedProfile = profile
-            // }
+            if (profile.active) {
+                selectedProfile = profile
+            }
         })
     }
-    console.log(selectedProfile)
     return selectedProfile
 }
 
