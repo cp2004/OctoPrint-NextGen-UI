@@ -50,6 +50,11 @@ const theme = createTheme({
             defaultProps: {
                 disableElevation: true
             }
+        },
+        MuiPopover: {
+            defaultProps: {
+                disableScrollLock: true
+            }
         }
     }
 });
