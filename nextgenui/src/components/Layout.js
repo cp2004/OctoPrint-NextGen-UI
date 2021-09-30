@@ -87,7 +87,7 @@ function OctoPrintUI () {
             <Container sx={{overflowY: 'visible'}} maxWidth={false}>
                 {
                     tabs.map(({tab: Tab, id}, index) => (
-                        <Route path={`/${id}`} children={({match}) => {
+                        <Route key={index} path={`/${id}`} children={({match}) => {
                             const active = !!match
 
                             return (
