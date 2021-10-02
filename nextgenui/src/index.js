@@ -16,6 +16,9 @@ import '@fontsource/sora/800.css'
 import {QueryClient, QueryClientProvider} from "react-query";
 import {ReactQueryDevtools} from "react-query/devtools";
 import {HelmetProvider} from "react-helmet-async";
+import {Container} from "@mui/material";
+import Typography from "@mui/material/Typography";
+import ErrorBoundary from "./components/ErrorBoundary";
 
 const client = new QueryClient({
     defaultOptions: {
@@ -25,17 +28,38 @@ const client = new QueryClient({
     }
 })
 
+function IndexError () {
+    return (
+        <Container maxWidth={"lg"} sx={{my: 10, textAlign: 'center'}}>
+            <Typography variant={"h2"} component={"h1"} color={"error"}>
+                There was an error rendering OctoPrint's UI
+            </Typography>
+            <Typography variant={"h4"} component={"h2"}>
+                Please report the contents of the browser console on the NextGenUI bug tracker.
+            </Typography>
+        </Container>
+    )
+}
+
+function Index () {
+    return (
+            <QueryClientProvider client={client}>
+                <ThemeProvider theme={theme}>
+                    <ErrorBoundary onError={IndexError}>
+                        <HelmetProvider>
+                            <SnackbarProvider maxSnack={4}>
+                                <CssBaseline/>
+                                <App/>
+                            </SnackbarProvider>
+                        </HelmetProvider>
+                    </ErrorBoundary>
+                </ThemeProvider>
+                <ReactQueryDevtools initialIsOpen={false} />
+            </QueryClientProvider>
+    )
+}
+
 ReactDOM.render(
-    <QueryClientProvider client={client}>
-        <ThemeProvider theme={theme}>
-            <HelmetProvider>
-                <SnackbarProvider maxSnack={4}>
-                    <CssBaseline/>
-                    <App/>
-                </SnackbarProvider>
-            </HelmetProvider>
-        </ThemeProvider>
-        <ReactQueryDevtools initialIsOpen={false} />
-    </QueryClientProvider>,
+    <Index />,
     document.getElementById('root')
 );
