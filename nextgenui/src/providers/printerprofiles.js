@@ -19,8 +19,7 @@ export function useActiveProfile () {
     let selectedProfile = {}
     if (context.profiles){
         Object.values(context.profiles).forEach((profile) => {
-            selectedProfile = profile
-            if (profile.active) {
+            if (profile.current) {
                 selectedProfile = profile
             }
         })
