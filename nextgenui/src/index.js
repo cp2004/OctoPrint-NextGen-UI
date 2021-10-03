@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import CssBaseline from "@mui/material/CssBaseline";
 import { ThemeProvider } from "@mui/material/styles";
 import {SnackbarProvider} from "notistack"
+import {RecoilRoot} from "recoil";
 
 import App from './App';
 import theme from "./theme"
@@ -19,6 +20,7 @@ import {HelmetProvider} from "react-helmet-async";
 import {Container} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import ErrorBoundary from "./components/ErrorBoundary";
+import useLagRadar from "./hooks/useLagRadar";
 
 const client = new QueryClient({
     defaultOptions: {
@@ -43,6 +45,7 @@ function IndexError () {
 
 function Index () {
     return (
+        <RecoilRoot>
             <QueryClientProvider client={client}>
                 <ThemeProvider theme={theme}>
                     <ErrorBoundary onError={IndexError}>
@@ -56,6 +59,7 @@ function Index () {
                 </ThemeProvider>
                 <ReactQueryDevtools initialIsOpen={false} />
             </QueryClientProvider>
+        </RecoilRoot>
     )
 }
 

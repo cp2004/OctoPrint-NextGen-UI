@@ -28,6 +28,7 @@
     "react-scripts": "4.0.3",
     "react-virtuoso": "^1.9.6",
     "recharts": "^2.0.9",
+    "recoil": "^0.4.1",
     "sockjs-client": "^1.5.1",
     "web-vitals": "^1.1.2"
   },

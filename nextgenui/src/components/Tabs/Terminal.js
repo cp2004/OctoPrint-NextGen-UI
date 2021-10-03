@@ -23,6 +23,7 @@ import {nanoid} from "nanoid/non-secure"
 
 import {useSocket} from "../../api/socket";
 import {sendGcode} from "../../api/control";
+import {usePrinterState} from "../../atoms/printerState";
 
 const TerminalContainer = styled(List)({
     height: "480px",  // 20 * 24, 24px is the height of each line
@@ -33,25 +34,13 @@ const TerminalContainer = styled(List)({
 export default function Terminal ({isActive}) {
     const [autoscroll, setAutoscroll] = React.useState(true)
     const [logLines, setLogLines] = React.useState([]);
-    const [printerState, setPrinterState] = React.useState({
-            operational: undefined,
-            paused: undefined,
-            printing: undefined,
-            pausing: undefined,
-            cancelling: undefined,
-            sdReady: undefined,
-            error: undefined,
-            ready: undefined,
-            closedOrError: undefined,
-    })
+    const printerStateFlags = usePrinterState().flags
 
     const processData = (msg) => {
         const data = msg.history ? msg.history : msg.current
         const logs = data.logs;
-        const stateFlags = data.state.flags
 
         setLogLines(prevState => prevState.concat(logs.map(log => toInternalFormat(log))).slice(autoscroll ? -300 : -1500))
-        setPrinterState(stateFlags)
     }
 
     useSocket("history", processData)
@@ -67,7 +56,7 @@ export default function Terminal ({isActive}) {
                 <TerminalContainer>
                     <TerminalLog logs={logLines} autoscroll={autoscroll} isVisible={isActive} disableAutoScroll={handleDisableAutoScroll}/>
                 </TerminalContainer>
-                <TerminalInput printerState={printerState} />
+                <TerminalInput printerState={printerStateFlags} />
             </Paper>
             <TerminalControls autoscroll={autoscroll} setAutoScroll={setAutoscroll} logLines={logLines} clear={() => setLogLines([])} />
         </>

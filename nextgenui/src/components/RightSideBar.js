@@ -25,6 +25,7 @@ import {connect, disconnect, getSettings as getConnectionSettings} from "../api/
 import {useProfileList} from "../providers/printerprofiles";
 import {useQuery} from "react-query";
 import {useSnackbar} from "notistack";
+import {usePrinterState} from "../atoms/printerState";
 
 function SideBarItem ({icon: Icon, children, title, textProps}) {
     return (
@@ -216,7 +217,7 @@ function ConnectionState ({isConnected}) {
         if (configType === "profile") setSelectedProfile(value)
     }
 
-    const optionsAvailable = !(error || (connectionSettings && connectionSettings.error))
+    const optionsAvailable = connectionSettings && !(error || connectionSettings.error)
 
     React.useEffect(() => {
         if (!optionsAvailable && !dataLoading) {
@@ -283,19 +284,7 @@ function ConnectionState ({isConnected}) {
 }
 
 export default function RightSideBar() {
-    const [printerState, setPrinterState] = React.useState({
-        notSetYet: true, // This will be removed when set from socket, use to render skeleton
-        text: "",
-        flags: {}
-    })
-
-    const onSocketMessage = (msg) => {
-        const data = msg.history ? msg.history : msg.current
-        setPrinterState(data.state)
-    }
-
-    useSocket("current", onSocketMessage)
-    useSocket("history", onSocketMessage)
+    const printerState = usePrinterState()
 
     const isConnected = !printerState.flags.closedOrError
 

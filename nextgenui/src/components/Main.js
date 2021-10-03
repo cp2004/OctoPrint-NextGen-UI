@@ -9,6 +9,7 @@ import Layout from "./Layout";
 import {SettingsProvider} from "../providers/settings";
 import OctoPrintSocketClient, {SocketProvider, useSocket} from "../api/socket";
 import {ProfileProvider} from "../providers/printerprofiles";
+import {useTrackPrinterState} from "../atoms/printerState";
 
 // WDS uses sockjs for hot-reloading, so OctoPrint's socket does not
 // work with the built in proxy & we have to manually override the URL here
@@ -67,6 +68,8 @@ function Main ({ loginData }) {
             socketConnect(loginData.name, loginData.session)
         }
     }, [isLoadingProfiles, isLoadingSettings, loginData]) // loginData SHOULD not change after initial render
+
+    useTrackPrinterState()
 
     if (error) {
         return (
