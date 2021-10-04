@@ -14,6 +14,12 @@ If you are a professional JavaScript/React developer, please turn away and save 
 https://github.com/cp2004/OctoPrint-NextGen-UI/releases/latest/download/release.zip
 ```
 
+## Usage
+
+Don't use it...
+
+If you must: Install the plugin, then add `?nextgen` on to the URL, like `http://localhost:5000/?nextgen`. Then it should open the alternative UI.
+
 ## Development
 
 Frontend development is done using Create React App, to take advantage of things like auto-reloading.
