@@ -8,6 +8,7 @@ import Loading from "./Loading";
 import Layout from "./Layout";
 import {SettingsProvider} from "../providers/settings";
 import OctoPrintSocketClient, {SocketProvider, useSocket} from "../api/socket";
+import {get as getSettings} from "../api/settings";
 import {ProfileProvider} from "../providers/printerprofiles";
 import {useTrackPrinterState} from "../atoms/printerState";
 
@@ -43,7 +44,7 @@ function Main ({ loginData }) {
      */
 
     const {isLoading: isLoadingSettings, error, data: settings, refetch: refetchSettings} = useQuery("settings", () => {
-        return fetch("./api/settings").then(response => response.json())
+        return getSettings()
     })
 
     const {isLoading: isLoadingProfiles, data: printerProfiles, refetch: refetchProfiles} = useQuery("profiles", () => {

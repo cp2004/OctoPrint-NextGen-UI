@@ -9,8 +9,6 @@ import FailedMessageIcon from '@mui/icons-material/SmsFailed';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import PersonIcon from '@mui/icons-material/Person';
 import TimerIcon from '@mui/icons-material/Timer';
-import TimelapseIcon from '@mui/icons-material/Timelapse';
-import WarningIcon from '@mui/icons-material/Warning';
 import {useState} from "react";
 import {useSocket} from "../api/socket";
 import {ListItemText, ListItemIcon, Skeleton, Divider, Select, InputLabel, FormControl} from "@mui/material";
@@ -18,11 +16,9 @@ import {useSettings} from "../providers/settings";
 import {Duration} from "luxon";
 import Typography from "@mui/material/Typography";
 import fileSize from "filesize";
-import Button from "@mui/material/Button";
 import LoadingButton from "@mui/lab/LoadingButton"
 import MenuItem from "@mui/material/MenuItem";
 import {connect, disconnect, getSettings as getConnectionSettings} from "../api/connection";
-import {useProfileList} from "../providers/printerprofiles";
 import {useQuery} from "react-query";
 import {useSnackbar} from "notistack";
 import {usePrinterState} from "../atoms/printerState";
@@ -165,14 +161,6 @@ const connectionButtonProps = {
     }
 }
 
-const ConnectionError = () => (
-    <Box display={"flex"} alignItems={"center"}>
-        <WarningIcon color={"error"} sx={{mr: 2}}/>
-        <Typography color={"error"}>There was an error connecting to your printer</Typography>
-    </Box>
-)
-
-
 function ConnectionState ({isConnected}) {
     const [loading, setLoading] = React.useState(false)
     const [selectedPort, setSelectedPort] = React.useState("")
@@ -183,7 +171,7 @@ function ConnectionState ({isConnected}) {
 
     const {enqueueSnackbar} = useSnackbar()
 
-    const {isLoading: dataLoading, error, data: connectionSettings, refetch} = useQuery("connection", () => {
+    const {isLoading: dataLoading, error, data: connectionSettings} = useQuery("connection", () => {
         return getConnectionSettings()
     })
 

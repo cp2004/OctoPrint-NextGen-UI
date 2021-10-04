@@ -1,4 +1,4 @@
-import {useActiveProfile, useProfiles} from "../../providers/printerprofiles";
+import {useActiveProfile} from "../../providers/printerprofiles";
 
 export default function Settings (props) {
     const activeProfileName = useActiveProfile().name

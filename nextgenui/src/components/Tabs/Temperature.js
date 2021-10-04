@@ -1,7 +1,7 @@
 import * as React from "react"
 import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import {useSocket} from "../../api/socket";
-import {useActiveProfile, useProfiles} from "../../providers/printerprofiles";
+import {useActiveProfile} from "../../providers/printerprofiles";
 import ListItem from "@mui/material/ListItem";
 import Box from "@mui/material/Box";
 import Chip from "@mui/material/Chip";

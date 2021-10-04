@@ -29,7 +29,7 @@ import useIsBrowserVisible from "../../hooks/useIsBrowserVisible";
 import {useSettings} from "../../providers/settings";
 import {jog, home, extrude, selectTool, setFlowrate as printer_setFlowrate, setFeedrate as printer_setFeedrate} from "../../api/printer";
 import {sendGcode} from "../../api/control";
-import {useActiveProfile, useProfiles} from "../../providers/printerprofiles";
+import {useActiveProfile} from "../../providers/printerprofiles";
 
 
 export default function Control ({isActive}) {

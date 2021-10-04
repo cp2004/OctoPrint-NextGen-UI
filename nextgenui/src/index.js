@@ -20,7 +20,6 @@ import {HelmetProvider} from "react-helmet-async";
 import {Container} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import ErrorBoundary from "./components/ErrorBoundary";
-import useLagRadar from "./hooks/useLagRadar";
 
 const client = new QueryClient({
     defaultOptions: {

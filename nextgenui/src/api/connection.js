@@ -1,4 +1,4 @@
-import {get, post, issueCommand} from "./index"
+import {get, issueCommand} from "./index"
 
 const url = "/api/connection"
 
