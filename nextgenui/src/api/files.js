@@ -1,7 +1,7 @@
 import {post as httpPost, get as httpGet, getWithData, issueCommand} from "./index"
 
-const url = "api/files"
-const downloadUrl = "downloads/files"
+const url = "/api/files"
+const downloadUrl = "/downloads/files"
 
 const resourceForLocation = (location) => url + "/" + location
 

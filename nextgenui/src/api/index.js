@@ -1,5 +1,5 @@
 export function get(route, additionalHeaders) {
-    if (!route.startsWith(".")){
+    if (route.startsWith("/")){
         route = "." + route
     }
     return fetch(route, {...requestOptions, ...additionalHeaders}).then(response => response.json())
