@@ -10,7 +10,10 @@ import {SettingsProvider} from "../providers/settings";
 import OctoPrintSocketClient, {SocketProvider, useSocket} from "../api/socket";
 import {get as getSettings} from "../api/settings";
 import {ProfileProvider} from "../providers/printerprofiles";
-import {useTrackPrinterState} from "../atoms/printerState";
+import {useTrackPrinterState} from "../state/printerState";
+
+import ConfirmDialog from "../utils/confirmDialog"
+import {useTrackJobState} from "../state/jobState";
 
 // WDS uses sockjs for hot-reloading, so OctoPrint's socket does not
 // work with the built in proxy & we have to manually override the URL here
@@ -71,6 +74,7 @@ function Main ({ loginData }) {
     }, [isLoadingProfiles, isLoadingSettings, loginData]) // loginData SHOULD not change after initial render
 
     useTrackPrinterState()
+    useTrackJobState()
 
     if (error) {
         return (
@@ -101,6 +105,7 @@ function Main ({ loginData }) {
         return (
             <Providers settings={settings} profiles={printerProfiles}>
                 <Layout />
+                <ConfirmDialog />
             </Providers>
         )
     }

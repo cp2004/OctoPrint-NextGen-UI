@@ -21,7 +21,7 @@ import MenuItem from "@mui/material/MenuItem";
 import {connect, disconnect, getSettings as getConnectionSettings} from "../api/connection";
 import {useQuery} from "react-query";
 import {useSnackbar} from "notistack";
-import {usePrinterState} from "../atoms/printerState";
+import {usePrinterState} from "../state/printerState";
 
 function SideBarItem ({icon: Icon, children, title, textProps}) {
     return (

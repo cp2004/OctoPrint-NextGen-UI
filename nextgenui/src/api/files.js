@@ -1,4 +1,4 @@
-import {post as httpPost, get as httpGet, getWithData, issueCommand} from "./index"
+import { get as httpGet, getWithData, issueCommand, httpDelete} from "./index"
 
 const url = "/api/files"
 const downloadUrl = "/downloads/files"
@@ -42,4 +42,9 @@ export function listForLocation (location, recursive, opts) {
 export function issueEntryCommand (location, entryname, command, data, opts) {
     const url = resourceForEntry(location, entryname)
     return issueCommand(url, command, data, opts)
+}
+
+export function deleteEntry(location, entryname, opts) {
+    const url = resourceForEntry(location, entryname)
+    return httpDelete(url, opts)
 }

@@ -23,7 +23,7 @@ import {nanoid} from "nanoid/non-secure"
 
 import {useSocket} from "../../api/socket";
 import {sendGcode} from "../../api/control";
-import {usePrinterState} from "../../atoms/printerState";
+import {usePrinterState} from "../../state/printerState";
 
 const TerminalContainer = styled(List)({
     height: "480px",  // 20 * 24, 24px is the height of each line

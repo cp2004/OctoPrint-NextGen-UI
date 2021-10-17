@@ -16,7 +16,7 @@ import Paper from '@mui/material/Paper';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import DeleteIcon from '@mui/icons-material/Delete';
-import {Collapse, ListItemIcon, ListItemText, Menu, MenuList, TextField} from "@mui/material";
+import {Alert, Collapse, LinearProgress, Link, ListItemIcon, ListItemText, Menu, MenuList, TextField} from "@mui/material";
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import ViewInArIcon from '@mui/icons-material/ViewInAr';
@@ -36,7 +36,12 @@ import StraightenIcon from '@mui/icons-material/Straighten';
 import FolderIcon from '@mui/icons-material/Folder';
 import {visuallyHidden} from "@mui/utils";
 import {useQuery} from "react-query";
-import {list as listFiles} from "../../api/files";
+import {deleteEntry, issueEntryCommand, list as listFiles} from "../../api/files";
+import useEvent from "../../hooks/useEvent";
+import {confirmDialog} from "../../utils/confirmDialog";
+import create from "zustand";
+import {useJobStateStore} from "../../state/jobState";
+import {usePrinterStateStore} from "../../state/printerState";
 
 // File browser table heavily based on demos from https://next.material-ui.com/components/tables/
 /*
@@ -50,6 +55,20 @@ import {list as listFiles} from "../../api/files";
  * - Upload file button - maybe outside file manager?
  * - Create folders
  */
+
+interface RequestActiveStore {
+    active: boolean;
+    on: () => void;
+    off: () => void;
+    set: (newState: boolean) => void;
+}
+
+const useRequestActiveStore = create<RequestActiveStore>(set => ({
+    active: false,
+    on: () => set({active: true}),
+    off: () => set({active: false}),
+    set: (newState) => set({active: newState})
+}))
 
 const headCells = [
     // Icons are 8% wide
@@ -167,9 +186,10 @@ function EnhancedTableHead({order, orderBy, onRequestSort}: EnhancedTableHeadPro
 interface EnhancedTableToolbarProps {
     searchTerm: string;
     onSearchChange: (event: React.ChangeEvent) => void;
+    onRefresh: () => void;
 }
 
-const EnhancedTableToolbar = ({searchTerm, onSearchChange}: EnhancedTableToolbarProps) => {
+const EnhancedTableToolbar = ({searchTerm, onSearchChange, onRefresh}: EnhancedTableToolbarProps) => {
     const [sdAnchorEl, setSdAnchorEl] = React.useState<Element | null>(null)
     const sdMenuOpen = Boolean(sdAnchorEl)
 
@@ -206,7 +226,7 @@ const EnhancedTableToolbar = ({searchTerm, onSearchChange}: EnhancedTableToolbar
                 <IconButton onClick={handleSdClick} size="large">
                     <SdCardIcon />
                 </IconButton>
-                <IconButton size="large">
+                <IconButton onClick={onRefresh} size="large">
                     <CachedIcon />
                 </IconButton>
                 <TextField
@@ -249,16 +269,21 @@ const EnhancedTableToolbar = ({searchTerm, onSearchChange}: EnhancedTableToolbar
     );
 }
 
-export default function Files() {
+export default function Files({isActive}) {
     const [order, setOrder] = React.useState<"asc" | "desc">('asc');
     const [orderBy, setOrderBy] = React.useState<string>('filename');
     const [page, setPage] = React.useState(0);
     const [search, setSearch] = React.useState("")
 
+    const isRequestActive = useRequestActiveStore(state => state.active)
+
     const rowsPerPage = 10
 
-    const {isLoading, error, data, refetch} = useQuery("listFiles", () => {
-        return listFiles()
+    const {isLoading, error, data, refetch} = useQuery("listFiles", () => listFiles(), {
+        // Lazy loading the files list - uses cached results until active
+        // Speed up initial load, don't send too many requests to the server.
+        // TODO fix re-requesting on tab change - kinda important
+        enabled: isActive,
     })
 
     const rows = data ? data.files : []
@@ -279,6 +304,15 @@ export default function Files() {
         setSearch(value)
     }
 
+    const handleRefresh = () => {
+        refetch()
+    }
+
+    // On changes to files, refresh the list
+    useEvent(() => {
+        handleRefresh()
+    }, ["UpdatedFiles"])
+
     const searchedRows = searchFilter(rows, search)
 
     // Avoid a layout jump when reaching the last page with empty rows.
@@ -288,8 +322,9 @@ export default function Files() {
     return (
         <Box sx={{ width: '100%' }}>
             <Paper sx={{ width: '100%', mb: 2 }}>
-                <EnhancedTableToolbar searchTerm={search} onSearchChange={handleSearchChange} />
+                <EnhancedTableToolbar searchTerm={search} onSearchChange={handleSearchChange} onRefresh={handleRefresh} />
                 <TableContainer>
+                    {(isLoading || isRequestActive) && <LinearProgress />}
                     <Table
                         sx={{ minWidth: 750 }}
                         aria-labelledby="tableTitle"
@@ -301,23 +336,27 @@ export default function Files() {
                             onRequestSort={handleRequestSort}
                         />
                         <TableBody>
-                            {stableSort(searchedRows, getComparator(order, orderBy))
-                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                .map((row: LocalFile | SdCardFile | Folder, index: number) => {
-                                    if (row.type === "folder"){
-                                        return <FolderView key={index} data={row} />
-                                    } else {
-                                        return <FileView key={index} data={row} />
-                                    }
-                                })}
-                            {emptyRows > 0 && (
-                                <TableRow
-                                    style={{
-                                        height: 42 * emptyRows,
-                                    }}
-                                >
-                                    <TableCell colSpan={6} />
-                                </TableRow>
+                            {error ? <FilesError /> : (
+                                <>
+                                {stableSort(searchedRows, getComparator(order, orderBy))
+                                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                    .map((row: LocalFile | SdCardFile | Folder, index: number) => {
+                                        if (row.type === "folder"){
+                                            return <FolderView key={index} data={row} />
+                                        } else {
+                                            return <FileView key={index} data={row} />
+                                        }
+                                    })}
+                                {emptyRows > 0 && (
+                                    <TableRow
+                                        style={{
+                                            height: 47 * emptyRows,
+                                        }}
+                                    >
+                                        <TableCell colSpan={6} />
+                                    </TableRow>
+                                )}
+                                </>
                             )}
                         </TableBody>
                     </Table>
@@ -347,20 +386,47 @@ const NeutralIcon = () => (
     <ViewInArIcon />
 )
 
+const FilesError = () => (
+    <TableRow>
+        <TableCell colspan={"6"}>
+            <Alert severity={"error"}>
+                There was an error fetching the file list. Please refresh the page, and if the issue persists please report it!
+            </Alert>
+        </TableCell>
+    </TableRow>
+
+)
+
 interface FileViewProps {
     data: LocalFile | SdCardFile
 }
 
 function FileView({data}: FileViewProps){
 
-    let Icon
-    if ("prints" in data) {
-        Icon = data.prints.success ? SuccessIcon : FailedIcon
-    } else {
-        Icon = NeutralIcon
-    }
+    const Icon = "prints" in data ? (data.prints.success ? SuccessIcon : FailedIcon) : NeutralIcon
 
     const [open, setOpen] = React.useState(false)
+    const setRequestActive = useRequestActiveStore(state => state.set)
+
+    const currentFile = useJobStateStore(state => state.file)
+    const printerReady = usePrinterStateStore(state => state.flags.ready)
+
+    const selected = currentFile.name === data.name
+
+    const handleSelect = (print=false) => {
+        if (!printerReady) return
+        setRequestActive(true)
+        issueEntryCommand(data.origin, data.path, "select", {print: print}).then(() => setRequestActive(false))
+    }
+
+    const handleDelete = () => {
+        confirmDialog("Confirm Delete", `You are about to delete ${data.display}`, doDelete)
+    }
+
+    const doDelete = () => {
+        setRequestActive(true)
+        deleteEntry(data.origin, data.path).then(() => setRequestActive(false))
+    }
 
     // Selected table row = printing?
     return (
@@ -369,7 +435,8 @@ function FileView({data}: FileViewProps){
                 hover
                 tabIndex={-1}
                 key={data.display}
-                sx={{'& > td': { borderBottom: 'unset' }}}
+                sx={{minHeight: "46px", '& > td': { borderBottom: 'unset' }}}
+                selected={selected}
             >
                 <TableCell>
                     <Icon />
@@ -385,7 +452,7 @@ function FileView({data}: FileViewProps){
                 </TableCell>
                 <TableCell padding={"none"} sx={{wordBreak: 'break-all', py: 1}}>
                     <Box display={"flex"} alignItems={"center"}>
-                        <Box>
+                        <Box sx={{cursor: printerReady ? 'pointer' : 'inherit'}} onClick={() => handleSelect(false)}>
                             {data.display}
                         </Box>
                     </Box>
@@ -397,16 +464,16 @@ function FileView({data}: FileViewProps){
                     {fileSize(data.size)}
                 </TableCell>
                 <TableCell>
-                    <IconButton size={"small"}>
+                    <IconButton size={"small"} onClick={() => handleSelect(true)} disabled={!printerReady}>
                         <PrintIcon />
                     </IconButton>
-                    <IconButton size={"small"}>
+                    <IconButton size={"small"} onClick={() => handleDelete()}>
                         <DeleteIcon />
                     </IconButton>
                     <IconButton size={"small"}>
                         <FileMoveIcon />
                     </IconButton>
-                    <IconButton size={"small"}>
+                    <IconButton size={"small"} component={Link} href={data.refs.download} >
                         <DownloadIcon />
                     </IconButton>
                 </TableCell>
@@ -431,6 +498,7 @@ function FolderView ({data}: FolderViewProps) {
         <TableRow
             hover
             tabIndex={-1}
+            sx={{minHeight: "46px"}}
         >
             <TableCell>
                 <FolderIcon />
