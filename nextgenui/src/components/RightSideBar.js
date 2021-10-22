@@ -11,17 +11,33 @@ import PersonIcon from '@mui/icons-material/Person';
 import TimerIcon from '@mui/icons-material/Timer';
 import {useState} from "react";
 import {useSocket} from "../api/socket";
-import {ListItemText, ListItemIcon, Skeleton, Divider, Select, InputLabel, FormControl} from "@mui/material";
+import {
+    ListItemText,
+    ListItemIcon,
+    Skeleton,
+    Divider,
+    Select,
+    InputLabel,
+    FormControl,
+    Button, LinearProgress,
+} from "@mui/material";
 import {useSettings} from "../providers/settings";
 import {Duration} from "luxon";
 import Typography from "@mui/material/Typography";
 import fileSize from "filesize";
 import LoadingButton from "@mui/lab/LoadingButton"
 import MenuItem from "@mui/material/MenuItem";
+import ReplayIcon from '@mui/icons-material/Replay';
+import PrintIcon from '@mui/icons-material/Print';
 import {connect, disconnect, getSettings as getConnectionSettings} from "../api/connection";
 import {useQuery} from "react-query";
 import {useSnackbar} from "notistack";
-import {usePrinterState} from "../state/printerState";
+import {usePrinterState, usePrinterStateStore} from "../state/printerState";
+import {useJobState, useJobStateStore} from "../state/jobState";
+import {start, restart, pause, resume, togglePause, cancel} from "../api/job"
+import {confirmDialog} from "../utils/confirmDialog";
+import {styled} from "@mui/material/styles";
+
 
 function SideBarItem ({icon: Icon, children, title, textProps}) {
     return (
@@ -69,12 +85,7 @@ function PrinterState ({state: printerState}) {
         ratio: 0,
     })
 
-    const [jobState, setJobState] = useState({
-        file: {},
-        estimatedPrintTime: 0,
-        lastPrintTime: 0,
-        filament: {}
-    })
+    const jobState = useJobState()
 
     const [progressState, setProgressState] = useState({
         completion: undefined,
@@ -86,7 +97,6 @@ function PrinterState ({state: printerState}) {
 
     const onSocketMessage = (msg) => {
         const data = msg.history ? msg.history : msg.current
-        setJobState(data.job)
         setProgressState(data.progress)
         setResends(data.resends)
     }
@@ -113,7 +123,7 @@ function PrinterState ({state: printerState}) {
                     {printerState.text}
                     </SideBarItem>
                     {printerState.flags.operational && <ResendRatio resendStats={resends} title={"Resend Ratio"} />}
-                    <Divider />
+                    <Divider component={"li"} />
                     {jobState.file.display && (
                         <>
                             <SideBarItem icon={FileIcon} title={"Selected File"}>
@@ -129,6 +139,7 @@ function PrinterState ({state: printerState}) {
                                 {estimatedTime ? timeFmt : "-"}
                             </SideBarItem>
                             <Divider />
+                            <PrintProgress completion={progressState.completion} />
                             <SideBarItem title={"Print Time"}>
                                 {'Print Time: '}
                                 {Duration
@@ -152,13 +163,32 @@ function PrinterState ({state: printerState}) {
     )
 }
 
+const PrintLinearProgress = styled(LinearProgress)({
+    height: 10,
+    borderRadius: 10,
+})
+
+
+function PrintProgress ({completion}) {
+    return (
+        <ListItem sx={{display: 'flex', alignItems: 'center', py: 1.25}} disablePadding>
+            <Box sx={{width: '100%', mr: 1}}>
+                <PrintLinearProgress value={completion} variant={"determinate"} />
+            </Box>
+            <Box sx={{minWidth: 35}}>
+                <Typography variant={"body2"} color={"text.secondary"}>
+                    {`${Math.round(completion)}%`}
+                </Typography>
+            </Box>
+        </ListItem>
+    )
+}
+
+
 const connectionButtonProps = {
     variant: "contained",
     color: "secondary",
     fullWidth: true,
-    sx: {
-        mb: 2
-    }
 }
 
 function ConnectionState ({isConnected}) {
@@ -271,6 +301,149 @@ function ConnectionState ({isConnected}) {
     }
 }
 
+function PrintControls () {
+    const flags = usePrinterStateStore(state => state.flags)
+
+    const filename = useJobStateStore(state => state.file.name)
+
+    // Button state summaries
+    const showPrint = (
+        flags.operational
+        && flags.ready
+        && !flags.printing
+        && !flags.cancelling
+        && !flags.pausing
+        && !flags.paused
+        // TODO permissions
+    )
+
+    const enablePrint = filename
+
+    const showPause = (
+        flags.operational
+        && flags.printing
+        && !flags.paused
+    )
+
+    const enablePause = (
+        !flags.pausing
+        && !flags.cancelling
+    )
+
+    const enableResume = (
+        flags.operational
+        && flags.paused
+    )
+
+    const showCancel = (
+        flags.operational
+        && (flags.printing || flags.paused)
+    )
+
+    const enableCancel = (
+        !flags.pausing
+        && !flags.cancelling
+    )
+
+    const showRestart = (
+        flags.operational
+        && flags.paused
+    )
+
+    // Button click handlers, with settings for their behaviour
+    const settings = useSettings()
+    const [requestInProgress, setRequestInProgress] = React.useState(false)
+
+    const handlePrint = () => {
+        const startPrint = () => {
+            apiCall(start)
+        }
+
+        if (settings.feature.printStartConfirmation) {
+            confirmDialog(
+                "Do you want to start the print job now?",
+                "This will start a new print job. Please check that the print bed is clear.",
+                startPrint
+            )
+        } else {
+            startPrint()
+        }
+    }
+
+    const handlePause = () => {
+        apiCall(pause)
+    }
+
+    const handleResume = () => {
+        apiCall(resume)
+    }
+
+    const handleCancel = () => {
+        const cancelPrint = () => {
+            apiCall(cancel)
+        }
+
+        if (settings.feature.printCancelConfirmation) {
+            confirmDialog(
+                "Are you sure?",
+                "This will cancel your print.",
+                cancelPrint
+            )
+        } else {
+            cancelPrint()
+        }
+    }
+
+    const handleRestart = () => {
+        confirmDialog(
+            "Are you sure?",
+            "This will restart the print job from the beginning.",
+            () => apiCall(restart)
+        )
+    }
+
+    const apiCall = (target) => {
+        setRequestInProgress(true)
+        return target().then(() => setRequestInProgress(false))
+    }
+
+
+    return (
+        <Box sx={{"&> *": {mb: 1}}} >
+            {showPrint &&
+            <LoadingButton loading={requestInProgress} variant={"contained"} fullWidth disabled={!enablePrint} onClick={handlePrint}>
+                <PrintIcon />
+                Print
+            </LoadingButton>
+            }
+            <Box sx={{display: 'flex' }}>
+                {showPause &&
+                <LoadingButton loading={requestInProgress} variant={"contained"} sx={{mr: 1, flexGrow: 0.5}} disabled={!enablePause} onClick={handlePause}>
+                    Pause
+                </LoadingButton>
+                }
+                {enableResume &&
+                <LoadingButton loading={requestInProgress} variant={"contained"} sx={{mr: 1, flexGrow: 0.5}} onClick={handleResume}>
+                    Resume
+                </LoadingButton>
+                }
+                {showCancel &&
+                <LoadingButton loading={requestInProgress} variant={"contained"} color={"error"} sx={{ml: 1, flexGrow: 0.5}} disabled={!enableCancel} onClick={handleCancel}>
+                    Cancel
+                </LoadingButton>
+                }
+            </Box>
+            {showRestart &&
+            <LoadingButton loading={requestInProgress} variant={"contained"} color={"error"} fullWidth onClick={handleRestart}>
+                <ReplayIcon />
+                Restart
+            </LoadingButton>
+            }
+        </Box>
+    )
+}
+
+
 export default function RightSideBar() {
     const printerState = usePrinterState()
 
@@ -289,7 +462,8 @@ export default function RightSideBar() {
         >
             <Box sx={{p: 2}}>
                 <ConnectionState isConnected={isConnected} />
-                <Divider />
+                <Divider sx={{my: 2}}/>
+                <PrintControls />
                 <PrinterState state={printerState} />
             </Box>
         </Drawer>

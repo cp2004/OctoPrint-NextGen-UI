@@ -33,8 +33,6 @@ export const useJobState = () => {
 export const useTrackJobState = () => {
     const setJobState = useJobStateStore(state => state.set)
 
-    console.log(setJobState)
-
     const onMessage = (msg: any) => {
         const data = msg.history ? msg.history : msg.current
 
