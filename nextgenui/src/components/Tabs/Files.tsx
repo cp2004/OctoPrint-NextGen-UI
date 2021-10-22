@@ -42,6 +42,7 @@ import {confirmDialog} from "../../utils/confirmDialog";
 import create from "zustand";
 import {useJobStateStore} from "../../state/jobState";
 import {usePrinterStateStore} from "../../state/printerState";
+import {styled} from "@mui/material/styles";
 
 // File browser table heavily based on demos from https://next.material-ui.com/components/tables/
 /*
@@ -269,6 +270,10 @@ const EnhancedTableToolbar = ({searchTerm, onSearchChange, onRefresh}: EnhancedT
     );
 }
 
+const LoadingPlaceholder = styled(Box)({
+    height: "4px"
+})
+
 export default function Files({isActive}) {
     const [order, setOrder] = React.useState<"asc" | "desc">('asc');
     const [orderBy, setOrderBy] = React.useState<string>('filename');
@@ -324,7 +329,7 @@ export default function Files({isActive}) {
             <Paper sx={{ width: '100%', mb: 2 }}>
                 <EnhancedTableToolbar searchTerm={search} onSearchChange={handleSearchChange} onRefresh={handleRefresh} />
                 <TableContainer>
-                    {(isLoading || isRequestActive) && <LinearProgress />}
+                    {(isLoading || isRequestActive) ? <LinearProgress /> : <LoadingPlaceholder />}
                     <Table
                         sx={{ minWidth: 750 }}
                         aria-labelledby="tableTitle"
