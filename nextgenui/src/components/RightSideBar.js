@@ -140,14 +140,14 @@ function PrinterState ({state: printerState}) {
                             </SideBarItem>
                             <Divider />
                             <PrintProgress completion={progressState.completion} />
-                            <SideBarItem title={"Print Time"}>
-                                {'Print Time: '}
+                            <SideBarItem title={"Elapsed Time"}>
+                                {'Elapsed Time: '}
                                 {Duration
                                     .fromObject({seconds: progressState.printTime || 0})
                                     .toFormat("hh:mm:ss")}
                             </SideBarItem>
-                            <SideBarItem title={"Print Time Left"}>
-                                {'Print Time Left: '}
+                            <SideBarItem title={"Time Left"}>
+                                {'Time Left: '}
                                 {Duration
                                     .fromObject({seconds: progressState.printTimeLeft || 0})
                                     .toFormat("hh:mm:ss")}

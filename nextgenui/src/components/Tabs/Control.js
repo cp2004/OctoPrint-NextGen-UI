@@ -37,7 +37,7 @@ export default function Control ({isActive}) {
     const webcamEnabled = settings.webcam.webcamEnabled
 
     return (
-        <Grid container spacing={2}>
+        <Grid container spacing={2} sx={{justifyContent: 'center'}}>
             {webcamEnabled &&
             <Grid item lg={6} md={12}>
                 <Webcam isActive={isActive}/>
@@ -67,7 +67,7 @@ function Webcam ({isActive}) {
     const webcamSrc = shouldWebcamLoad ? settings.webcam.streamUrl : undefined
 
     return (
-        <Paper elevation={2} sx={{p: 1, display: 'flex', height: "100%"}}>
+        <Paper elevation={2} sx={{p: 1, display: 'flex'}}>
             {!webcamError
                 ? <img width={"100%"} src={webcamSrc} alt={"Webcam Stream"} onError={() => setWebcamError(true)}/>
                 : <Alert variant={"outlined"} severity={"error"}

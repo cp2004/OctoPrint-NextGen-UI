@@ -14,7 +14,6 @@ import {HashRouter as Router, Route, Redirect} from "react-router-dom";
 
 const LayoutRoot = styled('div')(
     ({ theme }) => ({
-        backgroundColor: theme.palette.background.default,
         display: 'flex',
         height: '100%',
         overflow: 'hidden',
@@ -80,7 +79,6 @@ const Layout = (props) => {
 function OctoPrintUI () {
     return (
         <Box sx={{
-            backgroundColor: 'background.default',
             minHeight: '100%',
             py: 3
         }}>

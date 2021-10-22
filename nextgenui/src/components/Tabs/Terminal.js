@@ -111,6 +111,15 @@ function TerminalLog ({logs, autoscroll, isVisible, disableAutoScroll}) {
     )
 }
 
+const TerminalTextField = styled(OutlinedInput)(({theme}) => ({
+    borderRadius: `0 0 0 ${theme.shape.borderRadius}px`
+}))
+
+const TerminalSendButton = styled(Button)(({theme}) => ({
+    borderRadius: `0 0 ${theme.shape.borderRadius}px 0`
+}))
+
+
 function TerminalInput (props) {
     const {printerState} = props
 
@@ -201,22 +210,23 @@ function TerminalInput (props) {
     const ready = printerState.ready
 
     return (
-        <OutlinedInput
-            value={command}
-            fullWidth
-            size={"small"}
-            sx={{mt: "2px", fontFamily: "monospace"}}
-            placeholder={ready ? "Enter a command" : "Printing..."}
-            endAdornment={
-                <Button variant={"contained"} startIcon={<SendIcon />} disabled={command === ""}>
-                    Send
-                </Button>
-                }
-            onChange={handleChange}
-            onKeyDown={handleKeyDown}
-            onKeyUp={handleKeyUp}
-            disabled={!ready}
-        />
+        <Box display={"flex"}>
+            <TerminalTextField
+                value={command}
+                size={"small"}
+                sx={{
+                    fontFamily: "monospace", flexGrow: 1
+                }}
+                placeholder={ready ? "Enter a command" : "Printing..."}
+                onChange={handleChange}
+                onKeyDown={handleKeyDown}
+                onKeyUp={handleKeyUp}
+                disabled={!ready}
+            />
+            <TerminalSendButton variant={"contained"} startIcon={<SendIcon />} disabled={command === ""}>
+                Send
+            </TerminalSendButton>
+        </Box>
     )
 }
 

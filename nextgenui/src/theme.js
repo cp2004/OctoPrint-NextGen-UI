@@ -27,9 +27,6 @@ const theme = createTheme({
         error: {
             main: red.A400,
         },
-        background: {
-            default: '#fff',
-        },
     },
     typography: {
         fontFamily: ['"Sora"', ...systemFont].join(','),
