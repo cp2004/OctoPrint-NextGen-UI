@@ -19,7 +19,7 @@ import {
     Select,
     InputLabel,
     FormControl,
-    Button, LinearProgress,
+    LinearProgress,
 } from "@mui/material";
 import {useSettings} from "../providers/settings";
 import {Duration} from "luxon";
@@ -34,7 +34,7 @@ import {useQuery} from "react-query";
 import {useSnackbar} from "notistack";
 import {usePrinterState, usePrinterStateStore} from "../state/printerState";
 import {useJobState, useJobStateStore} from "../state/jobState";
-import {start, restart, pause, resume, togglePause, cancel} from "../api/job"
+import {start, restart, pause, resume, cancel} from "../api/job"
 import {confirmDialog} from "../utils/confirmDialog";
 import {styled} from "@mui/material/styles";
 

@@ -7,13 +7,12 @@ const resourceForLocation = (location) => url + "/" + location
 
 const downloadForLocation = (location) => downloadUrl + "/" + location
 
-const downloadForEntry = (location, filename) => downloadForLocation(location) + "/" + filename
+export const downloadForEntry = (location, filename) => downloadForLocation(location) + "/" + filename
 
 const resourceForEntry = (location, filename) => resourceForLocation(location) + "/" + filename
 
 // TODO verify if this is needed in my implementation
-const preProcessList = (response) => {
-}
+// const preProcessList = (response) => {}
 
 export function get (location, entryname, opts) {
     return httpGet(resourceForEntry(location, entryname), opts)

@@ -56,7 +56,6 @@ export default function ThemeContextProvider ({children}) {
         try {
             const item = window.localStorage.getItem("themeOptions")
             if (item) {
-                console.log(JSON.parse(item))
                 dispatch({type: "CHANGE", payload: JSON.parse(item)})
             }
         } catch (e) {
