@@ -52,7 +52,7 @@ const ConfirmDialog = () => {
                     Cancel
                 </Button>
                 <Button
-                    color="secondary"
+                    color="error"
                     variant="contained"
                     onClick={() => {
                         if (onSubmit) {

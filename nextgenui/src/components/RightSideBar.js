@@ -187,7 +187,6 @@ function PrintProgress ({completion}) {
 
 const connectionButtonProps = {
     variant: "contained",
-    color: "secondary",
     fullWidth: true,
 }
 
@@ -245,7 +244,7 @@ function ConnectionState ({isConnected}) {
 
     if (isConnected){
         return (
-            <LoadingButton loading={loading || dataLoading} onClick={handleDisconnect} {...connectionButtonProps}>Disconnect</LoadingButton>
+            <LoadingButton color={"error"} loading={loading || dataLoading} onClick={handleDisconnect} {...connectionButtonProps}>Disconnect</LoadingButton>
         )
     } else {
         return (
@@ -295,7 +294,7 @@ function ConnectionState ({isConnected}) {
                         ))}
                     </Select>
                 </FormControl>
-                <LoadingButton loading={loading || dataLoading} onClick={handleConnect} {...connectionButtonProps}>Connect</LoadingButton>
+                <LoadingButton color={"secondary"} loading={loading || dataLoading} onClick={handleConnect} {...connectionButtonProps}>Connect</LoadingButton>
             </Box>
         )
     }

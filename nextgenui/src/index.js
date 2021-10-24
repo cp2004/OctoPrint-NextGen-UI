@@ -1,12 +1,10 @@
 import * as React from 'react';
 import ReactDOM from 'react-dom';
 import CssBaseline from "@mui/material/CssBaseline";
-import { ThemeProvider } from "@mui/material/styles";
 import {SnackbarProvider} from "notistack"
 import {RecoilRoot} from "recoil";
 
 import App from './App';
-import theme from "./theme"
 
 // Loading Sora font
 import '@fontsource/sora/400.css'
@@ -20,6 +18,7 @@ import {HelmetProvider} from "react-helmet-async";
 import {Container} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import ErrorBoundary from "./components/ErrorBoundary";
+import ThemeContextProvider from "./components/ThemeContext";
 
 const client = new QueryClient({
     defaultOptions: {
@@ -46,7 +45,7 @@ function Index () {
     return (
         <RecoilRoot>
             <QueryClientProvider client={client}>
-                <ThemeProvider theme={theme}>
+                <ThemeContextProvider>
                     <ErrorBoundary onError={IndexError}>
                         <HelmetProvider>
                             <SnackbarProvider maxSnack={4}>
@@ -55,7 +54,7 @@ function Index () {
                             </SnackbarProvider>
                         </HelmetProvider>
                     </ErrorBoundary>
-                </ThemeProvider>
+                </ThemeContextProvider>
                 <ReactQueryDevtools initialIsOpen={false} />
             </QueryClientProvider>
         </RecoilRoot>

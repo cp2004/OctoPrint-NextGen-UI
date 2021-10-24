@@ -1,5 +1,5 @@
 import { red } from '@mui/material/colors';
-import { createTheme } from '@mui/material/styles';
+import {ThemeOptions} from '@mui/material/styles';
 
 const systemFont = [
     '-apple-system',
@@ -16,7 +16,7 @@ const systemFont = [
 
 
 // A custom theme for this app
-const theme = createTheme({
+const theme  = (themeMode: "dark" | "light"): ThemeOptions => ({
     palette: {
         primary: {
             main: '#9c27b0',
@@ -54,6 +54,6 @@ const theme = createTheme({
             }
         }
     }
-});
+})
 
 export default theme;

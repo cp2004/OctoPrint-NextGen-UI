@@ -5,10 +5,11 @@ import IconButton from "@mui/material/IconButton"
 import Toolbar from "@mui/material/Toolbar";
 import MenuIcon from '@mui/icons-material/Menu';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
-import tentacle from "../images/tentacle.svg"
-import {useSettings} from "../providers/settings";
+import tentacle from "../../images/tentacle.svg"
+import {useSettings} from "../../providers/settings";
 import Typography from "@mui/material/Typography";
 import {Tooltip} from "@mui/material";
+import DarkModeToggle from "./DarkModeToggle";
 
 const Navbar = ({ onMobileNavOpen, ...rest }) => {
 
@@ -27,6 +28,9 @@ const Navbar = ({ onMobileNavOpen, ...rest }) => {
                     </Typography>
                 </Box>
                 <Box sx={{ flexGrow: 1 }} />
+                <Box sx={{mr: 2}}>
+                    <DarkModeToggle />
+                </Box>
                 <Box sx={{ display: {lg: 'block', xs: 'none'}}} >
                     <Tooltip title={"Exit"}>
                         <IconButton color={"inherit"} href={"./"} size="large">
