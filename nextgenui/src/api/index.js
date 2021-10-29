@@ -64,3 +64,7 @@ const postOptions = {
     method: 'POST',
     ...requestOptions
 }
+
+export const createBulkDownloadUrl = (url, files) => {
+    return url + "?files=" + files.map(file => encodeURIComponent(file)).join("&")
+}
