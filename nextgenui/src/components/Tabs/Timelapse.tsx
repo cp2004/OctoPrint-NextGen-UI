@@ -13,7 +13,7 @@ import {
     FormControl,
     Button,
     Box,
-    TextField, Checkbox, FormControlLabel, Chip, Grid, IconButton, Link, Dialog, DialogTitle, DialogContent,
+    TextField, Checkbox, FormControlLabel, Chip, Grid, Link, Dialog, DialogTitle, DialogContent,
 } from "@mui/material";
 import DownloadIcon from '@mui/icons-material/Download';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -33,7 +33,6 @@ import {
     GridColDef,
     GridRowParams, GridSelectionModel,
     GridToolbarContainer,
-    GridToolbarItem,
 } from "@mui/x-data-grid";
 
 export default function Timelapse ({isActive}) {

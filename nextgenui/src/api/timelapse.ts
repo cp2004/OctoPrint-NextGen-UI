@@ -1,14 +1,11 @@
 import {get as httpGet, getWithData, post as httpPost, httpDelete, createBulkDownloadUrl} from "./index";
 
 const url = "/api/timelapse"
-const downloadUrl = "downloads/timelapse"
 const bulkDownloadUrl = "downloads/timelapses"
 
 const timelapseUrl = (filename: string) => (url + "/" + filename)
 
-const timelapseDownloadUrl = (filename: string) => (downloadUrl + "/" + filename)
-
-const unrenderedTimelapseUrl = (name: string) => (url + "/unrendered/" + name)
+// const unrenderedTimelapseUrl = (name: string) => (url + "/unrendered/" + name)
 
 
 export interface TimelapseList {
