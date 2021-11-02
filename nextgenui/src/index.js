@@ -2,7 +2,6 @@ import * as React from 'react';
 import ReactDOM from 'react-dom';
 import CssBaseline from "@mui/material/CssBaseline";
 import {SnackbarProvider} from "notistack"
-import {RecoilRoot} from "recoil";
 
 import App from './App';
 
@@ -43,21 +42,19 @@ function IndexError () {
 
 function Index () {
     return (
-        <RecoilRoot>
-            <QueryClientProvider client={client}>
-                <ThemeContextProvider>
-                    <ErrorBoundary onError={IndexError}>
-                        <HelmetProvider>
-                            <SnackbarProvider maxSnack={4}>
-                                <CssBaseline/>
-                                <App/>
-                            </SnackbarProvider>
-                        </HelmetProvider>
-                    </ErrorBoundary>
-                </ThemeContextProvider>
-                <ReactQueryDevtools initialIsOpen={false} />
-            </QueryClientProvider>
-        </RecoilRoot>
+        <QueryClientProvider client={client}>
+            <ThemeContextProvider>
+                <ErrorBoundary onError={IndexError}>
+                    <HelmetProvider>
+                        <SnackbarProvider maxSnack={4}>
+                            <CssBaseline/>
+                            <App/>
+                        </SnackbarProvider>
+                    </HelmetProvider>
+                </ErrorBoundary>
+            </ThemeContextProvider>
+            <ReactQueryDevtools initialIsOpen={false} />
+        </QueryClientProvider>
     )
 }
 
