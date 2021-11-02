@@ -66,5 +66,5 @@ const postOptions = {
 }
 
 export const createBulkDownloadUrl = (url, files) => {
-    return url + "?files=" + files.map(file => encodeURIComponent(file)).join("&")
+    return url + "?" + files.map(file => `files=${encodeURIComponent(file)}`).join("&")
 }

@@ -32,8 +32,9 @@ import {
     GridActionsCellItem,
     GridColDef,
     GridRowParams, GridSelectionModel,
-    GridToolbarContainer,
+    GridToolbarContainer, GridValueFormatterParams,
 } from "@mui/x-data-grid";
+import fileSize from "filesize";
 
 export default function Timelapse ({isActive}) {
     const settings = useSettings()
@@ -246,7 +247,9 @@ function TimelapseListTable ({data, loading, onDelete}) {
 
     const gridCols: GridColDef = React.useMemo(() => ([
         {field: "name", headerName: "Name", flex: 0.4, editable: false},
-        {field: "size", headerName: "Size", flex: 0.2, editable: false},
+        {field: "bytes", headerName: "Size", flex: 0.2, editable: false,
+            valueFormatter: (params: GridValueFormatterParams) => fileSize(params.value)
+        },
         {field: "date", headerName: "Date", flex: 0.2, editable: false},
         {field: "actions", type: "actions", flex: 0.2, headerName: "Actions", editable: false,
             getActions: (params: GridRowParams) => [
@@ -265,6 +268,7 @@ function TimelapseListTable ({data, loading, onDelete}) {
                     label={"Play"}
                     icon={<PlayCircleOutlineIcon />}
                     onClick={() => handlePreview(params.row.url)}
+                    disabled={params.row.url.toLowerCase().indexOf(".mp4") === -1}
                 />,
             ]
         }
