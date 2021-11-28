@@ -16,9 +16,21 @@ import Paper from '@mui/material/Paper';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import DeleteIcon from '@mui/icons-material/Delete';
-import {Alert, Collapse, LinearProgress, Link, ListItemIcon, ListItemText, Menu, MenuList, TextField} from "@mui/material";
+import {
+    Alert,
+    Collapse,
+    Divider,
+    LinearProgress,
+    Link,
+    ListItemIcon,
+    ListItemText,
+    Menu,
+    MenuList, Popover,
+    TextField
+} from "@mui/material";
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
+import InfoIcon from '@mui/icons-material/Info';
 import ViewInArIcon from '@mui/icons-material/ViewInAr';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
@@ -42,7 +54,15 @@ import {confirmDialog} from "../../utils/confirmDialog";
 import create from "zustand";
 import {useJobStateStore} from "../../state/jobState";
 import {usePrinterStateStore} from "../../state/printerState";
-import {styled} from "@mui/material/styles";
+import {styled, useTheme} from "@mui/material/styles";
+import {
+    DataGrid,
+    GridActionsCellItem,
+    GridColDef,
+    GridRenderCellParams, GridRowParams,
+    GridValueFormatterParams,
+    GridValueGetterParams
+} from "@mui/x-data-grid";
 
 // File browser table heavily based on demos from https://next.material-ui.com/components/tables/
 /*
@@ -274,7 +294,7 @@ const LoadingPlaceholder = styled(Box)({
     height: "4px"
 })
 
-export default function Files({isActive}) {
+function Files({isActive}) {
     const [order, setOrder] = React.useState<"asc" | "desc">('asc');
     const [orderBy, setOrderBy] = React.useState<string>('filename');
     const [page, setPage] = React.useState(0);
@@ -325,7 +345,8 @@ export default function Files({isActive}) {
         page > 0 ? Math.max(0, (1 + page) * rowsPerPage - searchedRows.length) : 0;
 
     return (
-        <Box sx={{ width: '100%' }}>
+        <Box>
+            <NewFiles isActive={isActive} />
             <Paper sx={{ width: '100%', mb: 2 }}>
                 <EnhancedTableToolbar searchTerm={search} onSearchChange={handleSearchChange} onRefresh={handleRefresh} />
                 <TableContainer>
@@ -630,3 +651,271 @@ function searchFilter(array, query) {
     query = query.toLocaleLowerCase()
     return array.filter((item) => item.name.includes(query) || item.display.includes(query))
 }
+
+
+export default Files
+
+
+function NewFiles ({isActive}) {
+    const {active: requestActive, set: setRequestActive} = useRequestActiveStore()
+
+    const {isLoading, error, data, refetch} = useQuery("listFiles", () => listFiles(), {
+        enabled: isActive
+    })
+
+    const formattedRows = (data ? data.files : []).map((row, index) => ({...row, id: index}))
+
+    const handleRefresh = () => {
+        refetch()
+    }
+
+    useEvent(() => {
+        if (isActive) {
+            handleRefresh()
+        }
+    }, ["UpdatedFiles"])
+
+    const printerReady = usePrinterStateStore(state => state.flags.ready)
+    const currentFile = useJobStateStore(state => state.file)
+
+    const handleSelect = React.useCallback( (fileData, print=false) => {
+        if (!printerReady) {
+            return
+        }
+        setRequestActive(true)
+        issueEntryCommand(fileData.origin, fileData.path, "select", {print: print}).then(
+            () => setRequestActive(false)
+        )
+    }, [printerReady, setRequestActive])
+
+    const handleDelete = React.useCallback((fileData) => {
+        confirmDialog("Confirm Delete", `You are about to delete ${fileData.display}`, () => {
+            setRequestActive(true)
+            deleteEntry(fileData.origin, fileData.path).then(
+                () => setRequestActive(false)
+            )
+        })
+    }, [setRequestActive])
+
+    const gridCols: GridColDef[] = React.useMemo(() => ([
+        {
+            field: "status",
+            flex: 0.1,
+            editable: false,
+            headerName: "",
+            sortable: false,
+            align: 'center',
+            valueGetter: (params: GridValueGetterParams) => ("prints" in params.row ? (!!params.row.prints.success) : null),
+            renderCell: (params: GridRenderCellParams) => (
+                params.value === null ? <NeutralIcon /> : (params.value ? <SuccessIcon /> : <FailedIcon />)
+            )
+        },
+        {
+            field: "info",
+            type: "actions",
+            flex: 0.1,
+            editable: false,
+            headerName: "",
+            sortable: false,
+            align: 'center',
+            renderCell: (params: GridRenderCellParams) => (
+                <FileInfo data={params.row} />
+            )
+        },
+        {
+            field: "display",
+            headerName: "Name",
+            flex: 0.7,
+            editable: false},
+        {
+            field: "date",
+            headerName: "Uploaded",
+            flex: 0.3,
+            editable: false,
+            valueFormatter: (params: GridValueFormatterParams) => (new Date(params.value * 1000).toLocaleDateString())
+        },
+        {
+            field: "size",
+            headerName: "Size",
+            flex: 0.3,
+            editable: false,
+            valueFormatter: (params: GridValueFormatterParams) => fileSize(params.value)
+        },
+        {
+            field: "actions",
+            type: "actions",
+            headerName: "Actions",
+            flex: 0.3,
+            editable: false,
+            getActions: (params: GridRowParams) => [
+                <GridActionsCellItem
+                    label={"print"}
+                    icon={<PrintIcon />}
+                    onClick={() => handleSelect(params.row, true)}
+                />,
+                <GridActionsCellItem
+                    label={"Delete"}
+                    icon={<DeleteIcon />}
+                    onClick={() => handleDelete(params.row)}
+                />,
+                <GridActionsCellItem
+                    label={"Move"}
+                    icon={<FileMoveIcon />}
+                />,
+                <GridActionsCellItem
+                    label={"Download"}
+                    icon={<DownloadIcon />}
+                    component={Link}
+                    href={params.row.refs.download}
+                />
+            ]
+        }
+    ]), [handleSelect, handleDelete])
+
+    const CustomToolbar = () => (
+        <Toolbar>
+            <Typography variant="h6" id="tableTitle" sx={{flex: '1 1 100%'}} component={"div"}>
+                Files
+            </Typography>
+            <Box
+                display={"flex"}
+                justifyContent={'flex-end'}
+                alignItems={'center'}
+                sx={{"&> *": {mx: 1}}}
+                width={'100%'}
+            >
+                <IconButton onClick={() => {}} size="large">
+                    <SdCardIcon />
+                </IconButton>
+                <IconButton onClick={() => {}} size="large">
+                    <CachedIcon />
+                </IconButton>
+                <TextField
+                    value={""}
+                    onChange={() => {}}
+                    variant={"standard"}
+                    InputProps={{
+                        startAdornment: (
+                            <SearchIcon />
+                        )
+                    }}
+                    sx={{ml: 2, mr: 1}}
+                />
+            </Box>
+        </Toolbar>
+    )
+
+
+
+    return (
+        <Box display={"flex"} minHeight={"500px"}>
+            <DataGrid
+                columns={gridCols}
+                rows={formattedRows}
+                autoHeight
+                pageSize={10}
+                rowsPerPageOptions={[]}
+                disableColumnMenu
+                disableSelectionOnClick={!printerReady}
+                components={{
+                    Toolbar: CustomToolbar
+                }}
+            />
+        </Box>
+    )
+}
+
+
+function FileInfo ({data}) {
+    const [anchorEl, setAnchorEl] = React.useState(null);
+
+    const handlePopoverOpen = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorEl(event.currentTarget);
+    }
+
+    const handlePopoverClose = () => {
+        setAnchorEl(null);
+    }
+
+    const open = Boolean(anchorEl);
+
+    // File Content stuff
+    const hasAnalysis = data.gcodeAnalysis && !data.gcodeAnalysis.analysisPending
+    const hasDimensions = (
+        hasAnalysis
+        && !data.gcodeAnalysis._empty
+        && data.gcodeAnalysis.dimensions
+        && data.gcodeAnalysis.dimensions.depth !== 0
+        && data.gcodeAnalysis.dimensions.height !== 0
+        && data.gcodeAnalysis.dimensions.width !== 0
+    )
+    const hasTimeEstimate = hasAnalysis  // Always available
+
+    const hasFilament = (
+        hasAnalysis
+        && data.gcodeAnalysis.filament
+        && typeof data.gcodeAnalysis.filament === "object"
+    )
+
+    const filament = data.gcodeAnalysis.filament
+    let filamentStats
+    if (Object.keys(filament).length === 1) {
+        filamentStats = (
+            <Typography variant={"body1"}>
+                Filament: {formatFilament(filament)}
+            </Typography>
+        )
+    }
+
+    return (
+        <>
+            <IconButton
+                onClick={handlePopoverOpen}
+            >
+                <InfoIcon
+                    color={"info"}
+                />
+            </IconButton>
+            <Popover
+                open={open}
+                anchorEl={anchorEl}
+                onClose={handlePopoverClose}
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'center',
+                }}
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                }}
+            >
+                <Box sx={{m: 2}}>
+                    <Typography variant={"body1"}>
+                        {hasDimensions
+                            ? `Model size: ${formatSize(data.gcodeAnalysis.dimensions)}`
+                            : "Model has no extrusion"
+                        }
+                    </Typography>
+                    <Typography variant={"body1"}>
+                        {hasTimeEstimate
+                            ? `Estimated print time: ${formatTime(data.gcodeAnalysis.estimatedPrintTime)}`
+                            : "Estimated print time unavailable"
+                        }
+                    </Typography>
+                    {hasFilament &&
+                        <Typography variant={"body1"}>
+                            {`Filament used: TODO...`}
+                        </Typography>
+                    }
+                </Box>
+            </Popover>
+        </>
+    )
+}
+
+const formatFilament = (filament) => {
+    if (!filament || !filament["length"]) return "-"
+
+    return (`${(filament["length"] / 1000).toFixed(2)}mm`)
+}
+

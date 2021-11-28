@@ -5,3 +5,15 @@
 :root {
     overflow-y: scroll;  /* Enforce page scrollbar to avoid constant changing of widths when clicking tabs */
 }
+
+/*
+ * Disabling grid selection outline, which looks ugly IMO
+ */
+
+.MuiDataGrid-cell:focus-within, .MuiDataGrid-cell:focus {
+    outline: none!important;
+}
+
+.MuiDataGrid-columnHeader:focus-within, .MuiDataGrid-columnHeader:focus {
+    outline: none!important;
+}
