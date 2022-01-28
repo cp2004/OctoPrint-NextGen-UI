@@ -1,4 +1,5 @@
 // @ts-nocheck
+// hehe lazy
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
@@ -67,10 +68,10 @@ import {
 // File browser table heavily based on demos from https://next.material-ui.com/components/tables/
 /*
  * TODOs here
- * - API routes
+ * ✓ API routes
  * ✓ View & sort by top level data: Name, Date, Size
  * ✓ Search box at top
- * - Dropdown for more info on file
+ * ✓ Info button for more info on file
  * - Differentiate between files & folders
  * - Select/Print/Delete/Move toolbars
  * - Upload file button - maybe outside file manager?
@@ -347,55 +348,6 @@ function Files({isActive}) {
     return (
         <Box>
             <NewFiles isActive={isActive} />
-            <Paper sx={{ width: '100%', mb: 2 }}>
-                <EnhancedTableToolbar searchTerm={search} onSearchChange={handleSearchChange} onRefresh={handleRefresh} />
-                <TableContainer>
-                    {(isLoading || isRequestActive) ? <LinearProgress /> : <LoadingPlaceholder />}
-                    <Table
-                        sx={{ minWidth: 750 }}
-                        aria-labelledby="tableTitle"
-                        size={'small'}
-                    >
-                        <EnhancedTableHead
-                            order={order}
-                            orderBy={orderBy}
-                            onRequestSort={handleRequestSort}
-                        />
-                        <TableBody>
-                            {error ? <FilesError /> : (
-                                <>
-                                {stableSort(searchedRows, getComparator(order, orderBy))
-                                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                    .map((row: LocalFile | SdCardFile | Folder, index: number) => {
-                                        if (row.type === "folder"){
-                                            return <FolderView key={index} data={row} />
-                                        } else {
-                                            return <FileView key={index} data={row} />
-                                        }
-                                    })}
-                                {emptyRows > 0 && (
-                                    <TableRow
-                                        style={{
-                                            height: 47 * emptyRows,
-                                        }}
-                                    >
-                                        <TableCell colSpan={6} />
-                                    </TableRow>
-                                )}
-                                </>
-                            )}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-                <TablePagination
-                    component="div"
-                    count={searchedRows.length}
-                    rowsPerPage={rowsPerPage}
-                    rowsPerPageOptions={[10]}
-                    page={page}
-                    onPageChange={handleChangePage}
-                />
-            </Paper>
         </Box>
     );
 }

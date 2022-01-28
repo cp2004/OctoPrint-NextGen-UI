@@ -38,7 +38,9 @@ const Navbar = ({ onMobileNavOpen, ...rest }) => {
                         </IconButton>
                     </Tooltip>
                 </Box>
-                <Box sx={{ display: {xs: 'block', lg: 'none'}}}>
+                <Box
+                    sx={{ display: {xs: 'block', lg: 'none'}}}
+                    >
                     <IconButton color="inherit" onClick={onMobileNavOpen} size="large">
                         <MenuIcon />
                     </IconButton>
